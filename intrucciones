@@ -30,6 +30,11 @@ Facturacion en linea
 Prueba minima para Firebase App Hosting
 
 Configuracion minima de Git:
-git config --global user.name "ramirezguill22" - Pass: Villanueva1+
+git config --global user.name "ramirezguill22"
 git config --global user.email "gramirez@grupocoresa.com"
+
+Comandos basicos para subir cambios:
+git add .
+git commit -m "mensaje"
+git push
 
