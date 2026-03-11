@@ -25,7 +25,7 @@ Comandos para levantar el servidor y probar la pagina localmente
 7. Probar la pagina en el navegador:
    http://localhost:3000
 
-Resultado esperado en la pagina principal:
+Resultado esperado en la pagina principal:---
 Facturacion en linea
 Prueba minima para Firebase App Hosting
 
