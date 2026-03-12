@@ -2,8 +2,25 @@
 2. Pagina creada: /.
 3. Contenido de /: landing estatica del portal con logo, titulo Facturacion en linea, descripcion breve y boton Iniciar facturacion.
 4. Pagina creada: /iniciar-facturacion.
-5. Contenido de /iniciar-facturacion: pantalla estatica de inicio de facturacion con texto explicativo, campo visual Numero de Ticket, boton Continuar y enlace Regresar.
-6. Navegacion activa desde / hacia /iniciar-facturacion y regreso a la pagina principal.
-7. Repositorio preparado con Git y publicado en GitHub.
-8. Aplicacion publicada en Firebase App Hosting.
-9. Estado actual: portal estatico navegable, sin backend, sin autenticacion, sin APIs y sin integracion con NetSuite.
+5. Contenido de /iniciar-facturacion: pantalla estatica de inicio de facturacion con texto explicativo, campo visual Numero de folio o ticket, boton Continuar y enlace Regresar.
+6. Pagina creada: /resultado-validacion.
+7. Contenido de /resultado-validacion: pantalla estatica de resultado visual preparada para mostrar estados como encontrado, no encontrado y no elegible, con opciones para regresar o capturar otro ticket.
+8. Navegacion activa desde / hacia /iniciar-facturacion, de /iniciar-facturacion hacia /resultado-validacion y regreso a las pantallas anteriores.
+9. Backend base creado en /backend para Cloud Run con estructura por capas: configuracion, rutas, controlador, servicio y manejo de errores.
+10. Endpoint implementado: POST /api/tickets/validar.
+11. Validacion basica activa para numeroTicket con longitud configurable mediante variable de entorno.
+12. Respuesta mock implementada para ticket encontrado, ticket no encontrado y error controlado.
+13. Repositorio preparado con Git y publicado en GitHub.
+14. Aplicacion frontend publicada en Firebase App Hosting.
+15. Estado actual: portal visual de tres pantallas y backend mock funcional, sin integracion real con NetSuite, sin autenticacion y sin base de datos.
+
+--------------------
+BLOQUE DE ESTADO ACTUAL
+--------------------
+
+16. Frontend local probado en http://localhost:3000.
+17. Backend local probado en http://localhost:8080.
+18. Endpoint validado manualmente con POST /api/tickets/validar.
+19. Caso validado manualmente: ticket encontrado con el valor mock TICKET-PRUEBA-0000001.
+20. Casos disponibles para prueba inmediata: ticket encontrado, ticket no encontrado y error de validacion por longitud.
+21. Estado de avance actual: fase visual inicial completada y Fase 2 base operativa con respuesta simulada.

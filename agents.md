@@ -347,3 +347,135 @@ Con eso ya tendrías:
 - respuesta real al usuario
 
 Y eso ya sería un avance muy serio.
+
+## Contrato funcional mínimo
+
+Esta sección define el contrato funcional inicial del proyecto para la validación del ticket, sin entrar todavía en la implementación técnica final.
+
+### Frontend -> Cloud Run
+
+El frontend debe enviar el valor capturado por el usuario como número de folio o ticket.
+
+Ejemplo funcional:
+
+```json
+{
+	"ticket": "VALOR_CAPTURADO"
+}
+```
+
+Reglas:
+
+- `ticket` representa el número de folio o ticket capturado en la UI.
+- La longitud del ticket no debe quedar hardcodeada a `20`; debe depender de configuración.
+- En esta fase inicial, el criterio principal de búsqueda es el valor del ticket capturado.
+
+### Cloud Run -> NetSuite
+
+Cloud Run debe consultar una Orden de Venta buscando coincidencia en el campo `custbody_ticket_venta`.
+
+Interpretación funcional de la consulta:
+
+```json
+{
+	"recordType": "salesorder",
+	"searchField": "custbody_ticket_venta",
+	"searchValue": "VALOR_CAPTURADO"
+}
+```
+
+### NetSuite -> Cloud Run
+
+NetSuite debe responder con un resultado controlado según el resultado de la búsqueda sobre `Sales Order`.
+
+Estados mínimos oficiales:
+
+- `encontrado`
+- `no_encontrado`
+- `duplicado`
+- `no_elegible`
+
+Ejemplo cuando existe coincidencia única:
+
+```json
+{
+	"status": "encontrado",
+	"message": "Ticket localizado correctamente.",
+	"ticket": "VALOR_CAPTURADO",
+	"salesOrderId": "12345",
+	"salesOrderTranId": "SO106789"
+}
+```
+
+Ejemplo cuando no existe coincidencia:
+
+```json
+{
+	"status": "no_encontrado",
+	"message": "No se encontró una Orden de Venta con ese ticket.",
+	"ticket": "VALOR_CAPTURADO"
+}
+```
+
+Ejemplo cuando existen múltiples coincidencias:
+
+```json
+{
+	"status": "duplicado",
+	"message": "Se encontraron múltiples Ordenes de Venta con el mismo ticket.",
+	"ticket": "VALOR_CAPTURADO",
+	"matches": 2
+}
+```
+
+Ejemplo cuando el ticket existe pero no cumple reglas de negocio:
+
+```json
+{
+	"status": "no_elegible",
+	"message": "El ticket existe, pero no cumple las reglas para facturación.",
+	"ticket": "VALOR_CAPTURADO",
+	"salesOrderId": "12345",
+	"reasonCode": "NO_ELEGIBLE"
+}
+```
+
+### Cloud Run -> Frontend
+
+Cloud Run debe normalizar la respuesta para que la UI no dependa de detalles internos de NetSuite.
+
+Ejemplo de respuesta normalizada exitosa:
+
+```json
+{
+	"success": true,
+	"status": "encontrado",
+	"message": "Ticket localizado correctamente.",
+	"data": {
+		"ticket": "VALOR_CAPTURADO",
+		"salesOrderId": "12345",
+		"salesOrderTranId": "SO106789"
+	}
+}
+```
+
+Ejemplo de respuesta normalizada negativa:
+
+```json
+{
+	"success": false,
+	"status": "no_encontrado",
+	"message": "No se encontró una Orden de Venta con ese ticket.",
+	"data": {
+		"ticket": "VALOR_CAPTURADO"
+	}
+}
+```
+
+### Reglas base del contrato
+
+- El ticket es un valor dentro de `Sales Order`.
+- El campo oficial inicial es `custbody_ticket_venta`.
+- La longitud del ticket debe ser configurable.
+- La solución no debe quedar cerrada permanentemente a un único criterio de búsqueda.
+- La UI debe trabajar por `status` y `message`, no por lógica específica de NetSuite.

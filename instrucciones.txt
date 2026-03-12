@@ -1,0 +1,146 @@
+Comandos para ejecutar el proyecto localmente
+
+1. Instalar Node.js LTS en Windows si aun no esta instalado:
+   winget install OpenJS.NodeJS.LTS
+
+2. Cerrar y volver a abrir la terminal de VS Code.
+
+3. Verificar que Node.js y npm esten disponibles:
+   node -v
+   npm -v
+
+4. Entrar a la carpeta raiz del proyecto:
+   cd c:\Users\guill\Documents\Portal_Facturacion_Online
+
+5. frontend local:
+   npm install
+
+6. npm run dev
+
+   --$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+
+7. Probar el frontend en el navegador:
+   http://localhost:3000
+
+8. Entrar a la carpeta del backend:
+   cd c:\Users\guill\Documents\Portal_Facturacion_Online\backend
+
+9. backend:
+   npm install
+
+10. backend local:
+    npm run dev
+
+    -- $env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+
+11. Probar el endpoint mock:
+    POST http://localhost:8080/api/tickets/validar
+
+    Body JSON:
+    {
+      "numeroTicket": "TICKET-PRUEBA-0000001"
+    }
+
+12. Comando PowerShell para probar el endpoint:
+    Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-0000001"}'
+
+Resultado esperado del frontend:
+Facturacion en linea
+
+Resultado esperado del backend con ticket mock valido:
+{
+  "ok": true,
+  "encontrado": true,
+  "estatus": "ticket_encontrado",
+  "mensaje": "Ticket encontrado"
+}
+
+Configuracion minima de Git:
+git config --global user.name "ramirezguill22"
+git config --global user.email "gramirez@grupocoresa.com"
+
+Comandos basicos para subir cambios:
+git add .
+git commit -m "mensaje"
+git push
+
+====================
+BLOQUE RAPIDO FRONTEND
+====================
+
+Carpeta:
+cd c:\Users\guill\Documents\Portal_Facturacion_Online
+
+Instalar dependencias:
+npm install
+
+Levantar frontend si npm funciona normal:
+npm run dev
+
+Levantar frontend si PowerShell no reconoce node:
+$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+
+URL del frontend:
+http://localhost:3000
+
+===================
+BLOQUE RAPIDO BACKEND
+===================
+
+Carpeta:
+cd c:\Users\guill\Documents\Portal_Facturacion_Online\backend
+
+Instalar dependencias:
+npm install
+
+Levantar backend si npm funciona normal:
+npm run dev
+
+Levantar backend si PowerShell no reconoce node:
+$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+
+URL base del backend:
+http://localhost:8080
+
+Endpoint:
+POST http://localhost:8080/api/tickets/validar
+
+Nota:
+Si abres la ruta en el navegador veras "Cannot GET /api/tickets/validar" porque el endpoint solo acepta POST.
+
+=====================
+BLOQUE RAPIDO PRUEBAS
+=====================
+
+Caso 1. Ticket encontrado:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-0000001"}'
+
+Resultado esperado:
+{
+   "ok": true,
+   "encontrado": true,
+   "estatus": "ticket_encontrado",
+   "mensaje": "Ticket encontrado"
+}
+
+Caso 2. Ticket no encontrado:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-9999999"}'
+
+Resultado esperado:
+{
+   "ok": true,
+   "encontrado": false,
+   "estatus": "ticket_no_encontrado",
+   "mensaje": "No se encontró una orden de venta con ese ticket"
+}
+
+Caso 3. Error de validacion por longitud:
+try { Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"123"}' } catch { $_.ErrorDetails.Message }
+
+Resultado esperado:
+{
+   "ok": false,
+   "estatus": "error_validacion",
+   "mensaje": "El número de ticket debe tener al menos 20 caracteres"
+}
+
