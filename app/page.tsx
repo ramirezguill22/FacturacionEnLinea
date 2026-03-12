@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const logoUrl =
   "https://4963265.app.netsuite.com/core/media/media.nl?id=2502846&c=4963265&h=XStlSX68j5vbnsFhOdYsRA7rffkCfz3vQriliVhV7YfdsJ__";
 
@@ -102,10 +104,9 @@ export default function HomePage() {
         </div>
 
         <div>
-          <button
-            type="button"
+          <Link
+            href="/iniciar-facturacion"
             style={{
-              border: "none",
               borderRadius: "999px",
               background: "linear-gradient(135deg, #0f5b8d 0%, #1f7aa5 100%)",
               color: "#ffffff",
@@ -113,11 +114,15 @@ export default function HomePage() {
               fontSize: "1rem",
               fontWeight: 700,
               cursor: "pointer",
-              boxShadow: "0 14px 32px rgba(15, 91, 141, 0.24)"
+              boxShadow: "0 14px 32px rgba(15, 91, 141, 0.24)",
+              textDecoration: "none",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center"
             }}
           >
             Iniciar facturación
-          </button>
+          </Link>
         </div>
       </section>
     </main>

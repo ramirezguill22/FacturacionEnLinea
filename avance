@@ -1,0 +1,9 @@
+1. Proyecto base en Next.js creado con App Router.
+2. Pagina creada: /.
+3. Contenido de /: landing estatica del portal con logo, titulo Facturacion en linea, descripcion breve y boton Iniciar facturacion.
+4. Pagina creada: /iniciar-facturacion.
+5. Contenido de /iniciar-facturacion: pantalla estatica de inicio de facturacion con texto explicativo, campo visual Numero de Ticket, boton Continuar y enlace Regresar.
+6. Navegacion activa desde / hacia /iniciar-facturacion y regreso a la pagina principal.
+7. Repositorio preparado con Git y publicado en GitHub.
+8. Aplicacion publicada en Firebase App Hosting.
+9. Estado actual: portal estatico navegable, sin backend, sin autenticacion, sin APIs y sin integracion con NetSuite.

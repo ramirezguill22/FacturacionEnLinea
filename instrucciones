@@ -20,7 +20,7 @@ Comandos para levantar el servidor y probar la pagina localmente
    npm run dev
 
    Si PowerShell no reconoce node o npm, usar este comando:
-   $env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+   
 
 7. Probar la pagina en el navegador:
    http://localhost:3000
