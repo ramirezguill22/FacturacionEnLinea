@@ -145,6 +145,16 @@ export default function BillingStartPage() {
                 backgroundColor: "#fbfdff"
               }}
             />
+            <span
+              style={{
+                fontSize: "0.92rem",
+                lineHeight: 1.6,
+                color: "#62788e"
+              }}
+            >
+              Captura el número exactamente como aparece en tu comprobante para
+              evitar rechazos por formato o búsqueda incorrecta.
+            </span>
           </label>
 
           {errorMessage ? (
@@ -161,6 +171,21 @@ export default function BillingStartPage() {
               {errorMessage}
             </div>
           ) : null}
+
+          <div
+            style={{
+              padding: "16px 18px",
+              borderRadius: "16px",
+              backgroundColor: "#f7fbff",
+              border: "1px solid #d9e6f2",
+              color: "#355c7d",
+              lineHeight: 1.7
+            }}
+          >
+            Durante la validación verás un resultado claro para saber si el
+            ticket fue localizado, si no existe o si es necesario volver a
+            intentarlo más tarde.
+          </div>
 
           <div
             style={{

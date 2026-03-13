@@ -1,12 +1,141 @@
 import Link from "next/link";
 
-const statusLabelMap: Record<string, string> = {
-  encontrado: "Ticket encontrado",
-  no_encontrado: "Ticket no encontrado",
-  duplicado: "Ticket duplicado",
-  no_elegible: "Ticket no elegible",
-  error_validacion: "Error de validación",
-  error_interno: "Error interno"
+type StatusPresentation = {
+  eyebrow: string;
+  title: string;
+  description: string;
+  accentColor: string;
+  accentBackground: string;
+  accentBorder: string;
+  badgeBackground: string;
+  badgeColor: string;
+  primaryActionLabel: string;
+  primaryActionHref: string;
+  secondaryActionLabel: string;
+  secondaryActionHref: string;
+  followUp: string;
+};
+
+const statusPresentationMap: Record<string, StatusPresentation> = {
+  encontrado: {
+    eyebrow: "Ticket localizado",
+    title: "Encontramos tu ticket",
+    description:
+      "Tu ticket fue localizado correctamente. Revisa los datos encontrados antes de continuar con el siguiente paso del proceso.",
+    accentColor: "#196b43",
+    accentBackground: "#eefaf3",
+    accentBorder: "#c9e9d5",
+    badgeBackground: "#dff4e8",
+    badgeColor: "#196b43",
+    primaryActionLabel: "Validar otro ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "La validación ya fue exitosa. La siguiente pantalla del flujo continuará en la fase de captura de datos fiscales."
+  },
+  no_encontrado: {
+    eyebrow: "Sin coincidencias",
+    title: "No encontramos información con ese ticket",
+    description:
+      "Revisa el número capturado y vuelve a intentarlo. Si el dato es correcto, puede que la orden todavía no esté disponible para consulta.",
+    accentColor: "#8a5a12",
+    accentBackground: "#fff8e8",
+    accentBorder: "#edd9a6",
+    badgeBackground: "#fbecc7",
+    badgeColor: "#8a5a12",
+    primaryActionLabel: "Capturar otro ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "Verifica que no falten dígitos y que el número coincida exactamente con el comprobante del cliente."
+  },
+  duplicado: {
+    eyebrow: "Revisión requerida",
+    title: "Se detectaron múltiples coincidencias",
+    description:
+      "Encontramos más de una orden asociada al mismo ticket. Este caso necesita revisión antes de continuar con el proceso.",
+    accentColor: "#9b4a10",
+    accentBackground: "#fff4ec",
+    accentBorder: "#f1cfb5",
+    badgeBackground: "#f9dfcf",
+    badgeColor: "#9b4a10",
+    primaryActionLabel: "Capturar otro ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "Si este resultado persiste, conviene revisar el dato directamente en el sistema antes de seguir con la solicitud."
+  },
+  no_elegible: {
+    eyebrow: "Validación incompleta",
+    title: "El ticket existe, pero no puede continuar",
+    description:
+      "Localizamos el ticket, pero por ahora no cumple las condiciones necesarias para seguir con el proceso de facturación.",
+    accentColor: "#7d4f14",
+    accentBackground: "#fff6ea",
+    accentBorder: "#edd4b0",
+    badgeBackground: "#f8e6c9",
+    badgeColor: "#7d4f14",
+    primaryActionLabel: "Capturar otro ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "Las reglas de elegibilidad se profundizarán en la siguiente fase del proyecto."
+  },
+  error_validacion: {
+    eyebrow: "Corrección necesaria",
+    title: "Revisa el formato del ticket",
+    description:
+      "El número capturado no cumple el formato mínimo esperado. Corrige el dato y vuelve a intentarlo.",
+    accentColor: "#9f3a22",
+    accentBackground: "#fff5f2",
+    accentBorder: "#f2d1c8",
+    badgeBackground: "#f8ddd6",
+    badgeColor: "#9f3a22",
+    primaryActionLabel: "Corregir ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "Captura el número completo tal como aparece en el comprobante para evitar una nueva validación fallida."
+  },
+  error_interno: {
+    eyebrow: "Validación no disponible",
+    title: "No pudimos validar el ticket por ahora",
+    description:
+      "El portal no pudo completar la validación en este momento. Intenta nuevamente en unos minutos.",
+    accentColor: "#9f3a22",
+    accentBackground: "#fff5f2",
+    accentBorder: "#f2d1c8",
+    badgeBackground: "#f8ddd6",
+    badgeColor: "#9f3a22",
+    primaryActionLabel: "Intentar nuevamente",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "Si el problema continúa, conviene revisar la disponibilidad del servicio antes de seguir atendiendo tickets."
+  },
+  sin_resultado: {
+    eyebrow: "Sin consulta previa",
+    title: "Aún no hay un resultado disponible",
+    description:
+      "Primero captura un ticket para que el portal pueda ejecutar la validación y mostrar un resultado real.",
+    accentColor: "#355c7d",
+    accentBackground: "#f3f8fd",
+    accentBorder: "#d7e4f0",
+    badgeBackground: "#e7f0f8",
+    badgeColor: "#355c7d",
+    primaryActionLabel: "Capturar ticket",
+    primaryActionHref: "/iniciar-facturacion",
+    secondaryActionLabel: "Regresar al inicio",
+    secondaryActionHref: "/",
+    followUp:
+      "La validación comenzará una vez que envíes un número de ticket desde la pantalla anterior."
+  }
 };
 
 type ValidationResultPageProps = {
@@ -35,10 +164,8 @@ export default async function ValidationResultPage({
   const salesOrderId = resolvedSearchParams.salesOrderId ?? "";
   const salesOrderTranId = resolvedSearchParams.salesOrderTranId ?? "";
   const matches = resolvedSearchParams.matches ?? "";
-  const ticketField = resolvedSearchParams.ticketField ?? "";
-  const title = statusLabelMap[status] ?? "Resultado disponible";
-  const accentColor = success ? "#1f7a4d" : "#9f3a22";
-  const accentBackground = success ? "#eefaf3" : "#fff5f2";
+  const presentation =
+    statusPresentationMap[status] ?? statusPresentationMap.sin_resultado;
 
   return (
     <main
@@ -108,8 +235,8 @@ export default async function ValidationResultPage({
           style={{
             padding: "24px",
             borderRadius: "20px",
-            background: accentBackground,
-            border: `1px solid ${success ? "#c9e9d5" : "#f2d1c8"}`,
+            background: presentation.accentBackground,
+            border: `1px solid ${presentation.accentBorder}`,
             display: "grid",
             gap: "14px"
           }}
@@ -120,19 +247,19 @@ export default async function ValidationResultPage({
               fontWeight: 700,
               letterSpacing: "0.1em",
               textTransform: "uppercase",
-              color: "#355c7d"
+              color: presentation.accentColor
             }}
           >
-            Estado mostrado
+            {presentation.eyebrow}
           </span>
 
           <strong
             style={{
               fontSize: "1.4rem",
-              color: accentColor
+              color: presentation.accentColor
             }}
           >
-            {title}
+            {presentation.title}
           </strong>
 
           <p
@@ -142,8 +269,25 @@ export default async function ValidationResultPage({
               lineHeight: 1.7
             }}
           >
-            {message}
+            {presentation.description}
           </p>
+
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "fit-content",
+              padding: "10px 14px",
+              borderRadius: "999px",
+              backgroundColor: presentation.badgeBackground,
+              color: presentation.badgeColor,
+              fontWeight: 700,
+              fontSize: "0.95rem"
+            }}
+          >
+            {success ? "Resultado favorable" : "Resultado por revisar"}
+          </div>
         </div>
 
         <div style={{ display: "grid", gap: "12px" }}>
@@ -154,10 +298,10 @@ export default async function ValidationResultPage({
               border: "1px solid #d7e4f0",
               backgroundColor: "#fbfdff",
               color: "#14324b",
-              fontWeight: 600
+              lineHeight: 1.7
             }}
           >
-            Estado: {status}
+            {presentation.followUp}
           </div>
 
           {ticket ? (
@@ -216,19 +360,20 @@ export default async function ValidationResultPage({
             </div>
           ) : null}
 
-          {ticketField ? (
+          {message && status === "sin_resultado" ? null : (
             <div
               style={{
                 padding: "16px 18px",
                 borderRadius: "16px",
                 border: "1px solid #d7e4f0",
                 backgroundColor: "#fbfdff",
-                color: "#14324b"
+                color: "#52667a",
+                lineHeight: 1.7
               }}
             >
-              Campo de búsqueda: {ticketField}
+              Referencia del sistema: {message}
             </div>
-          ) : null}
+          )}
         </div>
 
         <div
@@ -240,7 +385,7 @@ export default async function ValidationResultPage({
           }}
         >
           <Link
-            href="/iniciar-facturacion"
+            href={presentation.primaryActionHref}
             style={{
               borderRadius: "999px",
               background: "linear-gradient(135deg, #0f5b8d 0%, #1f7aa5 100%)",
@@ -255,11 +400,11 @@ export default async function ValidationResultPage({
               justifyContent: "center"
             }}
           >
-            Capturar otro ticket
+            {presentation.primaryActionLabel}
           </Link>
 
           <Link
-            href="/"
+            href={presentation.secondaryActionHref}
             style={{
               color: "#355c7d",
               fontWeight: 600,
@@ -267,7 +412,7 @@ export default async function ValidationResultPage({
               padding: "12px 4px"
             }}
           >
-            Regresar al inicio
+            {presentation.secondaryActionLabel}
           </Link>
         </div>
       </section>

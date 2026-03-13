@@ -337,3 +337,145 @@ Respuesta validada:
    "data": {}
 }
 
+=====================================
+BLOQUE FASE 5.3 MENSAJES Y ESTADOS UI
+=====================================
+
+Estado actual de la UI de resultado:
+- encontrado muestra un mensaje positivo y los datos de la orden localizada
+- no_encontrado muestra una indicacion clara para revisar el ticket capturado
+- duplicado muestra que el caso requiere revision antes de continuar
+- no_elegible muestra que el ticket existe pero no puede seguir al siguiente paso
+- error_validacion muestra que el formato del ticket debe corregirse
+- error_interno muestra un mensaje no tecnico para reintentar despues
+
+Objetivo de esta capa:
+- no exponer al usuario mensajes tecnicos de integracion
+- dar una accion clara despues de cada resultado
+- mantener una experiencia consistente en el portal
+
+========================================
+BLOQUE ESTRUCTURA FRONTEND HACIA BACKEND
+========================================
+
+Patron oficial del proyecto:
+- el frontend no debe construir URLs completas del backend en cada pantalla
+- el frontend usa rutas internas de Next.js como fachada
+- las rutas internas llaman al backend real usando una utilidad compartida
+
+Archivos base creados para este patron:
+- app/lib/backend/config.ts
+- app/lib/backend/routes.ts
+- app/lib/backend/client.ts
+
+Responsabilidad de cada archivo:
+- config.ts: obtiene la base URL del backend desde BACKEND_API_BASE_URL
+- routes.ts: concentra las rutas funcionales del backend
+- client.ts: reenvia peticiones JSON al backend y regresa una respuesta uniforme
+
+Ruta interna actual conectada al patron:
+- app/api/tickets/validar/route.ts
+
+Variable de entorno del frontend:
+- BACKEND_API_BASE_URL
+
+Archivo de referencia:
+- .env.example en la raiz del proyecto
+
+Valor local recomendado:
+BACKEND_API_BASE_URL=http://localhost:8080
+
+Ejemplo de crecimiento futuro:
+- backendRoutes.tickets.validar
+- backendRoutes.tickets.elegibilidad
+- backendRoutes.facturacion.datosFiscales
+- backendRoutes.facturacion.confirmar
+
+Regla recomendada:
+Cada nuevo endpoint del portal debe seguir este patron antes de ser consumido por la UI.
+
+====================================
+BLOQUE FASE 5.4 CLOUD RUN BACKEND
+====================================
+
+Objetivo:
+Desplegar el backend en Cloud Run para que el frontend deje de depender solo de localhost.
+
+Archivos preparados para Cloud Run:
+- backend/Dockerfile
+- backend/.dockerignore
+
+Requisitos del backend ya cubiertos:
+- el servicio escucha en PORT dinamico
+- el arranque productivo usa npm start
+- el build productivo genera dist/server.js
+
+Variables que deberan configurarse en Cloud Run:
+- PORT
+- TICKET_MIN_LENGTH
+- NETSUITE_RESTLET_URL
+- NETSUITE_ACCOUNT
+- NETSUITE_REALM
+- NETSUITE_CONSUMER_KEY
+- NETSUITE_CONSUMER_SECRET
+- NETSUITE_TOKEN_ID
+- NETSUITE_TOKEN_SECRET
+
+Recomendacion operativa:
+- no subir secretos al repositorio
+- cargar secretos directamente en la configuracion del servicio de Cloud Run
+- usar el backend desplegado como destino de BACKEND_API_BASE_URL en el frontend
+
+Comando de build local del backend antes de desplegar:
+cd c:\Users\guill\Documents\Portal_Facturacion_Online\backend
+$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run build
+
+Nota actual:
+En este entorno local aun no existe gcloud CLI. Para ejecutar el despliegue real se requiere instalar gcloud o usar Cloud Shell.
+
+Actualizacion aplicada:
+- gcloud ya fue instalado localmente
+- proyecto usado: facturacion-en-linea-b2577
+- region usada: us-central1
+- servicio desplegado: cloud-run-portal-facturacion-en-linea
+- URL publica: https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+
+=====================================
+BLOQUE FASE 5.4 FRONTEND CON CLOUD RUN
+=====================================
+
+Objetivo cumplido:
+El frontend ya puede usar un backend real desplegado en Cloud Run y no depende solo de localhost.
+
+Configuracion local aplicada para el frontend:
+Archivo local no versionado:
+.env.local
+
+Valor usado:
+BACKEND_API_BASE_URL=https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+
+Validacion realizada:
+- se apago el backend local
+- se probó POST http://localhost:3000/api/tickets/validar
+- el frontend siguio respondiendo correctamente usando Cloud Run
+
+Casos validados contra Cloud Run:
+1. encontrado
+2. no_encontrado
+3. error_validacion
+
+Ejemplo de prueba por el frontend ya conectado a Cloud Run:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:3000/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"294411548332216498"}'
+
+Respuesta esperada:
+{
+   "success": true,
+   "status": "encontrado",
+   "message": "Ticket localizado correctamente.",
+   "data": {
+      "ticket": "294411548332216498",
+      "salesOrderId": "7472575",
+      "salesOrderTranId": "OV642762-A"
+   }
+}
+

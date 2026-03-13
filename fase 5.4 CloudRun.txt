@@ -1,0 +1,207 @@
+====================================
+FASE 5.4 CLOUD RUN
+====================================
+
+Este archivo documenta lo realizado en la Fase 5.4 del proyecto y explica como quedo funcionando la integracion entre el frontend del portal y el backend desplegado en Cloud Run.
+
+====================================
+BLOQUE 1. OBJETIVO DE LA FASE 5.4
+====================================
+
+Objetivo principal:
+Dejar el backend operativo en Cloud Run para que el frontend del portal ya no dependa solo del backend local en localhost.
+
+Resultado esperado de la fase:
+- backend desplegado en Google Cloud Run
+- URL publica operativa del backend
+- frontend preparado para consumir esa URL mediante configuracion
+- flujo real validado desde el frontend hacia el backend desplegado
+
+====================================
+BLOQUE 2. LO QUE SE REALIZO
+====================================
+
+Durante esta fase se hizo lo siguiente:
+
+1. Se reviso que el backend ya cumpliera con lo minimo necesario para Cloud Run:
+- escucha por PORT dinamico
+- arranca con npm start
+- compila correctamente a dist/server.js
+
+2. Se prepararon archivos de despliegue en /backend:
+- Dockerfile
+- .dockerignore
+- .gcloudignore
+
+3. Se instalo Google Cloud SDK localmente.
+
+4. Se autentico gcloud con la cuenta de trabajo.
+
+5. Se configuro el proyecto correcto de Google Cloud:
+- facturacion-en-linea-b2577
+
+6. Se habilitaron las APIs necesarias para despliegue:
+- run.googleapis.com
+- cloudbuild.googleapis.com
+- artifactregistry.googleapis.com
+
+7. Se desplego el backend en Cloud Run.
+
+8. Se obtuvo la URL publica del servicio desplegado.
+
+9. Se configuro el frontend local para usar la URL desplegada del backend mediante BACKEND_API_BASE_URL.
+
+10. Se validaron casos funcionales reales contra el backend ya desplegado.
+
+====================================
+BLOQUE 3. ARCHIVOS CLAVE UTILIZADOS
+====================================
+
+Archivos del backend para despliegue:
+- backend/Dockerfile
+- backend/.dockerignore
+- backend/.gcloudignore
+
+Archivos del frontend para el consumo del backend:
+- app/lib/backend/config.ts
+- app/lib/backend/routes.ts
+- app/lib/backend/client.ts
+- app/api/tickets/validar/route.ts
+
+Archivos de seguimiento y documentacion:
+- avance
+- instrucciones.txt
+
+====================================
+BLOQUE 4. SERVICIO DESPLEGADO
+====================================
+
+Proyecto de Google Cloud:
+facturacion-en-linea-b2577
+
+Region usada:
+us-central1
+
+Nombre del servicio Cloud Run:
+cloud-run-portal-facturacion-en-linea
+
+URL publica del backend:
+https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+
+====================================
+BLOQUE 5. COMO FUNCIONA AHORA EL FLUJO
+====================================
+
+El flujo actual funciona asi:
+
+1. El usuario captura un ticket en la pantalla del portal.
+
+2. El frontend no llama directamente a NetSuite.
+
+3. El frontend envia la peticion a su ruta interna de Next.js:
+- /api/tickets/validar
+
+4. Esa ruta interna usa la capa compartida del frontend para reenviar la peticion al backend real.
+
+5. La base URL del backend ya no esta escrita en cada pantalla.
+Se toma desde la variable:
+- BACKEND_API_BASE_URL
+
+6. En ambiente local de frontend, BACKEND_API_BASE_URL puede apuntar al backend desplegado en Cloud Run.
+
+7. El backend desplegado recibe el ticket, valida el request, consulta NetSuite mediante el RESTlet y devuelve una respuesta normalizada.
+
+8. El frontend recibe esa respuesta y muestra el resultado en la pantalla de validacion.
+
+====================================
+BLOQUE 6. VARIABLES Y RESPONSABILIDADES
+====================================
+
+Frontend:
+- usa BACKEND_API_BASE_URL para saber a que backend debe llamar
+
+Backend:
+- usa sus propias variables de entorno para conectarse a NetSuite
+- sigue necesitando:
+  - NETSUITE_RESTLET_URL
+  - NETSUITE_ACCOUNT
+  - NETSUITE_REALM
+  - NETSUITE_CONSUMER_KEY
+  - NETSUITE_CONSUMER_SECRET
+  - NETSUITE_TOKEN_ID
+  - NETSUITE_TOKEN_SECRET
+
+Regla importante:
+- el frontend nunca debe tener las credenciales de NetSuite
+- solo el backend conoce y usa esos valores
+
+====================================
+BLOQUE 7. VALIDACIONES REALIZADAS
+====================================
+
+Se validaron los siguientes casos:
+
+1. Caso encontrado
+Resultado:
+- success true
+- status encontrado
+- se devolvieron salesOrderId y salesOrderTranId
+
+2. Caso no_encontrado
+Resultado:
+- success false
+- status no_encontrado
+- se devolvio el ticket consultado
+
+3. Caso error_validacion
+Resultado:
+- success false
+- status error_validacion
+- se devolvio el mensaje por longitud minima del ticket
+
+Validacion clave de la fase:
+Se apago el backend local y aun asi el frontend continuo respondiendo correctamente, lo que confirma que ya estaba consumiendo Cloud Run y no localhost.
+
+====================================
+BLOQUE 8. CONFIGURACION LOCAL DEL FRONTEND
+====================================
+
+Para probar el frontend local contra el backend desplegado se uso un archivo local no versionado:
+- .env.local
+
+Con este valor:
+BACKEND_API_BASE_URL=https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+
+Esto permite que el portal en localhost use el backend real desplegado.
+
+====================================
+BLOQUE 9. QUE QUEDA CERRADO CON ESTA FASE
+====================================
+
+Con la Fase 5.4 queda cerrado lo siguiente:
+- backend desplegado en Cloud Run
+- frontend preparado para consumir backend desplegado
+- flujo real del ticket funcionando a traves del backend publicado
+- arquitectura lista para crecer con nuevos endpoints usando el mismo patron
+
+====================================
+BLOQUE 10. SIGUIENTE PASO
+====================================
+
+El siguiente paso natural despues de 5.4 es la Fase 5.5:
+validacion funcional final del flujo completo en ambiente real.
+
+Eso implica revisar y confirmar formalmente:
+- encontrado
+- no_encontrado
+- error_validacion
+- cualquier error operativo relevante
+
+====================================
+BLOQUE 11. NOTA OPERATIVA IMPORTANTE
+====================================
+
+Durante la conversacion se usaron credenciales reales de NetSuite para lograr el despliegue y la validacion del backend.
+
+Recomendacion inmediata:
+- rotar consumer key, consumer secret, token id y token secret antes de seguir usando este entorno como productivo o semiproductivo.

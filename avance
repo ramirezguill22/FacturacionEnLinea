@@ -68,3 +68,55 @@ BLOQUE DE AVANCE 13 MAR 2026 UI REAL
 53. Se valido localmente el caso error_interno en una instancia temporal del backend con URL invalida para NetSuite.
 54. Estado actual: Fase 4.4 cerrada y Fase 4.5 validada localmente con casos funcionales y de error controlado.
 55. Siguiente paso natural: consumir esta respuesta real desde el flujo visual completo y preparar el siguiente avance funcional del portal.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 FASE 5.3
+--------------------
+
+56. Se aplico el pulido visual y funcional de estados en la pantalla de resultado del portal.
+57. La UI ya muestra mensajes especificos para encontrado, no_encontrado, duplicado, no_elegible, error_validacion y error_interno.
+58. La pantalla de resultado ya no depende del mensaje tecnico crudo para comunicar el estado principal al usuario.
+59. Se agrego jerarquia visual por estado con bloques diferenciados, mensajes de seguimiento y acciones mas claras.
+60. La pantalla de captura ahora orienta mejor al usuario sobre como ingresar el ticket y que esperar del proceso.
+61. El frontend quedo compilado y validado correctamente despues del ajuste de experiencia de usuario.
+62. Estado actual: Fase 5.3 aplicada en local y lista para continuar con la conexion al backend desplegado.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 PREVIO 5.4
+--------------------
+
+63. Se formalizo la estructura de acceso del frontend al backend antes de iniciar la fase 5.4.
+64. Se centralizo la base URL del backend en una configuracion unica mediante BACKEND_API_BASE_URL.
+65. Se creo una utilidad compartida en app/lib/backend para reenviar peticiones desde las rutas internas de Next.js.
+66. Se definio un catalogo central de rutas del backend para evitar URLs dispersas en el frontend.
+67. La ruta interna actual /api/tickets/validar ya consume la nueva capa compartida en lugar de construir la URL manualmente.
+68. Se agrego .env.example en la raiz para documentar la configuracion del frontend hacia el backend.
+69. El patron oficial del proyecto queda definido como frontend -> rutas internas Next.js -> backend desplegado.
+70. Estado actual: la base tecnica para crecer con endpoints adicionales ya quedo lista antes de iniciar 5.4.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 FASE 5.4 INICIO
+--------------------
+
+71. Se inicio la preparacion de la fase 5.4 para conectar la UI con un backend desplegado en Cloud Run.
+72. Se verifico que el backend ya respeta PORT dinamico, requisito base para Cloud Run.
+73. Se agrego Dockerfile en /backend para desplegar el servicio como contenedor en Cloud Run.
+74. Se agrego .dockerignore en /backend para evitar incluir archivos innecesarios y secretos locales en la imagen.
+75. Se detecto que gcloud CLI no esta instalado todavia en el entorno local actual.
+76. Estado actual: el backend ya quedo preparado tecnicamente para despliegue, pendiente ejecutar la publicacion real en Cloud Run.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 FASE 5.4 CERRADA
+--------------------
+
+77. Se instalo Google Cloud SDK localmente para ejecutar el despliegue real.
+78. Se autentico gcloud con la cuenta de trabajo y se configuro el proyecto facturacion-en-linea-b2577.
+79. Se habilitaron las APIs necesarias para Cloud Run, Cloud Build y Artifact Registry.
+80. Se agrego backend/.gcloudignore para excluir backend/.env y artefactos locales del upload.
+81. El backend fue desplegado exitosamente en Cloud Run en la region us-central1.
+82. Servicio desplegado: cloud-run-portal-facturacion-en-linea.
+83. URL publica del backend desplegado: https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app.
+84. El frontend local quedo apuntando al backend desplegado mediante BACKEND_API_BASE_URL en .env.local.
+85. Se confirmo que el frontend responde aun con el backend local apagado, validando que ya consume Cloud Run.
+86. Se validaron en el flujo real de 5.4 los casos encontrado, no_encontrado y error_validacion.
+87. Estado actual: Fase 5.4 cerrada con backend desplegado y frontend conectado al servicio real.
