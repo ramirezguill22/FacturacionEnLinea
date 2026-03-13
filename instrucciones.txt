@@ -187,3 +187,153 @@ Estado actual:
 Importante:
 Si backend/.env tiene valores de ejemplo o credenciales no validas, el endpoint respondera con error de integracion y no con el mock anterior.
 
+=============================================
+BLOQUE ACTUALIZADO CONTRATO Y PRUEBA BACKEND
+=============================================
+
+Contrato actual del request al backend:
+- el campo oficial es ticket
+- numeroTicket queda aceptado solo como compatibilidad temporal
+
+Request oficial actual:
+{
+   "ticket": "VALOR_CAPTURADO"
+}
+
+Endpoint local:
+POST http://localhost:8080/api/tickets/validar
+
+PowerShell con contrato oficial:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"294411548332216498"}'
+
+Respuesta real validada localmente:
+{
+   "ok": true,
+   "status": "encontrado",
+   "message": "Ticket localizado correctamente.",
+   "ticket": "294411548332216498",
+   "salesOrderId": "7472575",
+   "salesOrderTranId": "OV642762-A"
+}
+
+Uso temporal por compatibilidad:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"294411548332216498"}'
+
+Nota operativa:
+Si estas corriendo el backend con PowerShell y aparece el problema de npm.ps1, usa este arranque:
+$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
+
+===================================
+BLOQUE INVOCACION DIRECTA RESTLET
+===================================
+
+Forma correcta de invocar el RESTlet en NetSuite:
+- metodo POST
+- URL del deployment real del RESTlet
+- Content-Type: application/json
+- Accept: application/json
+- autenticacion TBA valida
+
+Body oficial del RESTlet:
+{
+   "ticket": "294411548332216498"
+}
+
+Compatibilidad temporal del RESTlet:
+Tambien acepta numeroTicket, pero ticket es el campo oficial que debe usarse de ahora en adelante.
+
+========================================
+BLOQUE RESPUESTA NORMALIZADA BACKEND UI
+========================================
+
+Contrato actual del backend hacia frontend:
+{
+   "success": true,
+   "status": "encontrado",
+   "message": "Ticket localizado correctamente.",
+   "data": {
+      "ticket": "VALOR_CAPTURADO",
+      "salesOrderId": "12345",
+      "salesOrderTranId": "SO106789"
+   }
+}
+
+Notas:
+- success solo es true cuando el status es encontrado
+- status es el campo funcional principal para la UI
+- message es el texto principal para mostrar al usuario
+- data contiene los valores utiles del resultado
+
+=====================================
+BLOQUE FRONTEND CONECTADO AL BACKEND
+=====================================
+
+Flujo actual:
+- /iniciar-facturacion envia el ticket al proxy interno de Next.js
+- el proxy interno esta en /api/tickets/validar
+- el proxy reenvia la peticion al backend real
+- /resultado-validacion muestra el resultado real usando query params
+
+Endpoint interno del frontend:
+POST http://localhost:3000/api/tickets/validar
+
+Configuracion opcional para el proxy:
+BACKEND_API_BASE_URL=http://localhost:8080
+
+Si no se define BACKEND_API_BASE_URL, el frontend usa por defecto http://localhost:8080.
+
+=================================
+BLOQUE PRUEBAS LOCALES VALIDADAS
+=================================
+
+Caso encontrado validado por proxy frontend:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:3000/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"294411548332216498"}'
+
+Respuesta validada:
+{
+   "success": true,
+   "status": "encontrado",
+   "message": "Ticket localizado correctamente.",
+   "data": {
+      "ticket": "294411548332216498",
+      "salesOrderId": "7472575",
+      "salesOrderTranId": "OV642762-A"
+   }
+}
+
+Caso no_encontrado validado por proxy frontend:
+Invoke-RestMethod -Method Post -Uri 'http://localhost:3000/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"999999999999999999"}'
+
+Respuesta validada:
+{
+   "success": false,
+   "status": "no_encontrado",
+   "message": "No se encontró una Orden de Venta con ese ticket.",
+   "data": {
+      "ticket": "999999999999999999"
+   }
+}
+
+Caso error_validacion validado por proxy frontend:
+try { Invoke-WebRequest -Method Post -Uri 'http://localhost:3000/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"123"}' } catch { $_.Exception.Response.GetResponseStream() | % { $reader = New-Object System.IO.StreamReader($_); $reader.ReadToEnd() } }
+
+Respuesta validada:
+{
+   "success": false,
+   "status": "error_validacion",
+   "message": "El número de ticket debe tener al menos 18 caracteres",
+   "data": {}
+}
+
+Caso error_interno validado en backend temporal:
+1. Levantar backend temporal en otro puerto con URL invalida de NetSuite.
+2. Probar POST contra http://localhost:8081/api/tickets/validar.
+
+Respuesta validada:
+{
+   "success": false,
+   "status": "error_interno",
+   "message": "No fue posible comunicarse con NetSuite: fetch failed",
+   "data": {}
+}
+

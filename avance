@@ -36,3 +36,35 @@ BLOQUE DE ESTADO ACTUAL
 31. El endpoint publico POST /api/tickets/validar ya fue conectado a la capa real de NetSuite.
 32. El backend conserva validacion local de entrada y luego delega al cliente tecnico de NetSuite.
 33. La normalizacion final para frontend aun no se aplica; el endpoint devuelve la respuesta funcional proveniente de NetSuite o un error controlado de integracion.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026
+--------------------
+
+34. Se corrigio el problema de compilacion de Firebase App Hosting excluyendo /backend y /netsuite del tsconfig del frontend.
+35. El build local del frontend quedo validado correctamente despues de ese ajuste.
+36. Se corrigio el contrato publico del backend para usar ticket como campo oficial de entrada.
+37. Se dejo compatibilidad temporal con numeroTicket para no romper pruebas previas.
+38. El RESTlet de NetSuite quedo alineado para priorizar ticket como campo oficial y aceptar numeroTicket solo como compatibilidad temporal.
+39. Se actualizo la documentacion del RESTlet para reflejar ticket como campo oficial del request.
+40. Se ejecuto prueba real del backend local contra NetSuite con el ticket 294411548332216498.
+41. Resultado confirmado de la prueba real: status encontrado.
+42. Datos confirmados por backend y NetSuite: salesOrderId 7472575 y salesOrderTranId OV642762-A.
+43. Estado actual: la integracion backend -> NetSuite ya responde correctamente en local para al menos un caso real de ticket encontrado.
+44. Siguiente ajuste natural: normalizar la respuesta del backend para el frontend y cerrar la etapa 4.4.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 UI REAL
+--------------------
+
+45. Etapa 4.4 aplicada: el backend ya responde con un contrato normalizado para frontend usando success, status, message y data.
+46. El backend mantiene status funcionales como encontrado, no_encontrado, duplicado, no_elegible, error_validacion y error_interno.
+47. La pantalla /iniciar-facturacion ya envia el ticket real al flujo de validacion.
+48. La UI ya usa una ruta interna en Next.js en /api/tickets/validar para proxyear la llamada al backend.
+49. La pantalla /resultado-validacion ya muestra el resultado real devuelto por el backend.
+50. Se valido localmente el caso encontrado a traves del proxy del frontend con success true y datos de la orden de venta.
+51. Se valido localmente el caso no_encontrado a traves del proxy del frontend con success false y ticket devuelto en data.
+52. Se valido localmente el caso error_validacion a traves del proxy del frontend con mensaje por longitud minima.
+53. Se valido localmente el caso error_interno en una instancia temporal del backend con URL invalida para NetSuite.
+54. Estado actual: Fase 4.4 cerrada y Fase 4.5 validada localmente con casos funcionales y de error controlado.
+55. Siguiente paso natural: consumir esta respuesta real desde el flujo visual completo y preparar el siguiente avance funcional del portal.

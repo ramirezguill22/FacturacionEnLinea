@@ -1,6 +1,67 @@
+"use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+
+type ValidationResponse = {
+  success: boolean;
+  status: string;
+  message: string;
+  data?: {
+    ticket?: string;
+    salesOrderId?: string;
+    salesOrderTranId?: string;
+    matches?: number;
+    ticketField?: string;
+  };
+};
 
 export default function BillingStartPage() {
+  const router = useRouter();
+  const [ticket, setTicket] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (isSubmitting) {
+      return;
+    }
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch("/api/tickets/validar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ ticket: ticket })
+      });
+
+      const result = (await response.json()) as ValidationResponse;
+      const query = new URLSearchParams({
+        success: result.success ? "true" : "false",
+        status: result.status,
+        message: result.message,
+        ticket: result.data?.ticket ?? ticket.trim(),
+        salesOrderId: result.data?.salesOrderId ?? "",
+        salesOrderTranId: result.data?.salesOrderTranId ?? "",
+        matches: result.data?.matches ? String(result.data.matches) : "",
+        ticketField: result.data?.ticketField ?? ""
+      });
+
+      router.push(`/resultado-validacion?${query.toString()}`);
+    } catch {
+      setErrorMessage("No fue posible validar el ticket en este momento.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <main
       style={{
@@ -60,18 +121,21 @@ export default function BillingStartPage() {
               maxWidth: "620px"
             }}
           >
-            Completa esta información para simular el inicio del proceso de
-            facturación dentro del portal. Esta pantalla es visual y todavía no
-            realiza validaciones ni envíos reales.
+            Completa esta información para validar el ticket contra el backend
+            real del portal. La pantalla ya consulta el servicio y te dirige al
+            resultado de validación.
           </p>
         </div>
 
-        <form style={{ display: "grid", gap: "20px" }}>
+        <form onSubmit={handleSubmit} style={{ display: "grid", gap: "20px" }}>
           <label style={{ display: "grid", gap: "8px", color: "#14324b" }}>
             <span style={{ fontWeight: 600 }}>Número de folio o ticket</span>
             <input
               type="text"
               placeholder="Ingresa tu número de folio o ticket"
+              value={ticket}
+              onChange={(event) => setTicket(event.target.value)}
+              required
               style={{
                 padding: "14px 16px",
                 borderRadius: "14px",
@@ -83,6 +147,21 @@ export default function BillingStartPage() {
             />
           </label>
 
+          {errorMessage ? (
+            <div
+              style={{
+                padding: "14px 16px",
+                borderRadius: "14px",
+                backgroundColor: "#fff3f0",
+                border: "1px solid #f3c7bc",
+                color: "#9f3a22",
+                lineHeight: 1.6
+              }}
+            >
+              {errorMessage}
+            </div>
+          ) : null}
+
           <div
             style={{
               display: "flex",
@@ -92,25 +171,27 @@ export default function BillingStartPage() {
               paddingTop: "8px"
             }}
           >
-            <Link
-              href="/resultado-validacion"
+            <button
+              type="submit"
+              disabled={isSubmitting}
               style={{
                 borderRadius: "999px",
                 background: "linear-gradient(135deg, #0f5b8d 0%, #1f7aa5 100%)",
                 color: "#ffffff",
+                border: "none",
                 padding: "16px 28px",
                 fontSize: "1rem",
                 fontWeight: 700,
                 cursor: "pointer",
                 boxShadow: "0 14px 32px rgba(15, 91, 141, 0.24)",
-                textDecoration: "none",
                 display: "inline-flex",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
+                opacity: isSubmitting ? 0.7 : 1
               }}
             >
-              Continuar
-            </Link>
+              {isSubmitting ? "Validando..." : "Continuar"}
+            </button>
 
             <Link
               href="/"

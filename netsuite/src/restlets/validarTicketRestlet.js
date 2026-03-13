@@ -12,12 +12,12 @@ define(["N/log", "../services/ticketSearchService"], function(log, ticketSearchS
       return "";
     }
 
-    if (typeof requestBody.numeroTicket === "string") {
-      return requestBody.numeroTicket.trim();
-    }
-
     if (typeof requestBody.ticket === "string") {
       return requestBody.ticket.trim();
+    }
+
+    if (typeof requestBody.numeroTicket === "string") {
+      return requestBody.numeroTicket.trim();
     }
 
     return "";

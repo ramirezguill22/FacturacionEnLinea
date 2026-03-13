@@ -11,7 +11,8 @@ Esta carpeta contiene la implementacion base del RESTlet de NetSuite para la Fas
 
 El RESTlet:
 
-- recibe un `ticket` o `numeroTicket`
+- recibe `ticket` como campo oficial
+- acepta `numeroTicket` solo por compatibilidad temporal
 - busca en `Sales Order`
 - filtra por `custbody_ticket_venta`
 - devuelve JSON controlado para:
@@ -26,7 +27,7 @@ Tambien devuelve `error_validacion` si no recibe un ticket utilizable.
 
 ```json
 {
-  "numeroTicket": "VALOR_CAPTURADO"
+  "ticket": "VALOR_CAPTURADO"
 }
 ```
 
@@ -48,7 +49,7 @@ Request:
 
 ```json
 {
-  "numeroTicket": "VALOR_EXISTENTE_UNICO"
+  "ticket": "VALOR_EXISTENTE_UNICO"
 }
 ```
 
@@ -75,7 +76,7 @@ Request:
 
 ```json
 {
-  "numeroTicket": "VALOR_INEXISTENTE"
+  "ticket": "VALOR_INEXISTENTE"
 }
 ```
 
@@ -100,7 +101,7 @@ Request:
 
 ```json
 {
-  "numeroTicket": "VALOR_DUPLICADO"
+  "ticket": "VALOR_DUPLICADO"
 }
 ```
 

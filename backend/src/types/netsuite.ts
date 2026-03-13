@@ -1,15 +1,18 @@
 export type NetSuiteTicketValidationRequest = {
-  numeroTicket: string;
+  ticket: string;
 };
+
+export type TicketValidationStatus =
+  | "encontrado"
+  | "no_encontrado"
+  | "duplicado"
+  | "no_elegible"
+  | "error_validacion"
+  | "error_interno";
 
 export type NetSuiteTicketValidationResponse = {
   ok: boolean;
-  status:
-    | "encontrado"
-    | "no_encontrado"
-    | "duplicado"
-    | "error_validacion"
-    | "error_interno";
+  status: TicketValidationStatus;
   message: string;
   ticket?: string;
   salesOrderId?: string;
@@ -17,4 +20,17 @@ export type NetSuiteTicketValidationResponse = {
   matches?: number;
   ticketField?: string;
   detail?: string;
+};
+
+export type TicketValidationApiResponse = {
+  success: boolean;
+  status: TicketValidationStatus;
+  message: string;
+  data: {
+    ticket?: string;
+    salesOrderId?: string;
+    salesOrderTranId?: string;
+    matches?: number;
+    ticketField?: string;
+  };
 };
