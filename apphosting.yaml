@@ -1,0 +1,6 @@
+env:
+  - variable: BACKEND_API_BASE_URL
+    value: https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+    availability:
+      - BUILD
+      - RUNTIME
