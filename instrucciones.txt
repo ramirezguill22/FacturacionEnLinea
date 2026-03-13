@@ -395,87 +395,26 @@ Regla recomendada:
 Cada nuevo endpoint del portal debe seguir este patron antes de ser consumido por la UI.
 
 ====================================
-BLOQUE FASE 5.4 CLOUD RUN BACKEND
+BLOQUE FASE 5.5 CIERRE FUNCIONAL
 ====================================
 
-Objetivo:
-Desplegar el backend en Cloud Run para que el frontend deje de depender solo de localhost.
-
-Archivos preparados para Cloud Run:
-- backend/Dockerfile
-- backend/.dockerignore
-
-Requisitos del backend ya cubiertos:
-- el servicio escucha en PORT dinamico
-- el arranque productivo usa npm start
-- el build productivo genera dist/server.js
-
-Variables que deberan configurarse en Cloud Run:
-- PORT
-- TICKET_MIN_LENGTH
-- NETSUITE_RESTLET_URL
-- NETSUITE_ACCOUNT
-- NETSUITE_REALM
-- NETSUITE_CONSUMER_KEY
-- NETSUITE_CONSUMER_SECRET
-- NETSUITE_TOKEN_ID
-- NETSUITE_TOKEN_SECRET
-
-Recomendacion operativa:
-- no subir secretos al repositorio
-- cargar secretos directamente en la configuracion del servicio de Cloud Run
-- usar el backend desplegado como destino de BACKEND_API_BASE_URL en el frontend
-
-Comando de build local del backend antes de desplegar:
-cd c:\Users\guill\Documents\Portal_Facturacion_Online\backend
-$env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run build
-
-Nota actual:
-En este entorno local aun no existe gcloud CLI. Para ejecutar el despliegue real se requiere instalar gcloud o usar Cloud Shell.
-
-Actualizacion aplicada:
-- gcloud ya fue instalado localmente
-- proyecto usado: facturacion-en-linea-b2577
-- region usada: us-central1
-- servicio desplegado: cloud-run-portal-facturacion-en-linea
-- URL publica: https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
-
-=====================================
-BLOQUE FASE 5.4 FRONTEND CON CLOUD RUN
-=====================================
-
 Objetivo cumplido:
-El frontend ya puede usar un backend real desplegado en Cloud Run y no depende solo de localhost.
+El flujo inicial del portal ya quedo validado en ambiente publicado, no solo en local.
 
-Configuracion local aplicada para el frontend:
-Archivo local no versionado:
-.env.local
-
-Valor usado:
-BACKEND_API_BASE_URL=https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
-
-Validacion realizada:
-- se apago el backend local
-- se probó POST http://localhost:3000/api/tickets/validar
-- el frontend siguio respondiendo correctamente usando Cloud Run
-
-Casos validados contra Cloud Run:
+Validaciones confirmadas en la URL publica del portal:
 1. encontrado
 2. no_encontrado
 3. error_validacion
 
-Ejemplo de prueba por el frontend ya conectado a Cloud Run:
-Invoke-RestMethod -Method Post -Uri 'http://localhost:3000/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"294411548332216498"}'
+Tambien se confirmo lo siguiente:
+- la captura del ticket funciona correctamente en la UI publicada
+- la navegacion hacia la pantalla de resultado funciona correctamente
+- los mensajes finales del portal son claros y consistentes con cada estado
+- el frontend publicado consume el backend desplegado en Cloud Run
 
-Respuesta esperada:
-{
-   "success": true,
-   "status": "encontrado",
-   "message": "Ticket localizado correctamente.",
-   "data": {
-      "ticket": "294411548332216498",
-      "salesOrderId": "7472575",
-      "salesOrderTranId": "OV642762-A"
-   }
-}
+Resultado de la fase:
+La etapa de integracion real frontend -> backend publicado queda cerrada para el flujo inicial del ticket.
+
+Siguiente fase:
+Fase 6. Reglas de elegibilidad del ticket.
 

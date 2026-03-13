@@ -1,130 +1,84 @@
 import Link from "next/link";
+import { PortalCarousel } from "./components/portal-carousel";
 
-const logoUrl =
-  "https://4963265.app.netsuite.com/core/media/media.nl?id=2502846&c=4963265&h=XStlSX68j5vbnsFhOdYsRA7rffkCfz3vQriliVhV7YfdsJ__";
+const carouselItems = [
+  {
+    src: "/Imagenes/4.%20ingenierias.jpg",
+    alt: "Soluciones de ingeniería CORESA",
+    title: "Ingeniería y precisión para cada operación",
+    description:
+      "El portal conserva la esencia visual de CORESA con una presentación más limpia, especializada y orientada al control del proceso."
+  },
+  {
+    src: "/Imagenes/1.%20extractores.jpg",
+    alt: "Equipos extractores CORESA",
+    title: "Soporte industrial con enfoque corporativo",
+    description:
+      "Una experiencia de facturación que se siente parte del ecommerce, pero con una capa más sobria y enfocada en operación."
+  },
+  {
+    src: "/Imagenes/3.%20tuberia%20flexible.jpg",
+    alt: "Tubería flexible CORESA",
+    title: "Claridad para validar cada ticket",
+    description:
+      "Toda la navegación fue diseñada para que el usuario identifique rápido el estado de su consulta y actúe con confianza."
+  },
+  {
+    src: "/Imagenes/5.%20sucursales.jpg",
+    alt: "Cobertura y sucursales CORESA",
+    title: "Respaldo comercial y servicio especializado",
+    description:
+      "El portal aprovecha la identidad institucional de Grupo Coresa y la traduce a un flujo digital más ordenado y profesional."
+  }
+];
 
 export default function HomePage() {
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "32px",
-        background:
-          "linear-gradient(180deg, #f4f7fb 0%, #e8eef7 50%, #dde7f3 100%)",
-        fontFamily: '"Segoe UI", Tahoma, Geneva, Verdana, sans-serif'
-      }}
-    >
-      <section
-        style={{
-          width: "100%",
-          maxWidth: "960px",
-          padding: "56px 48px",
-          borderRadius: "28px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 24px 70px rgba(18, 38, 63, 0.12)",
-          border: "1px solid rgba(21, 55, 94, 0.08)",
-          display: "grid",
-          gap: "24px"
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "16px",
-            flexWrap: "wrap"
-          }}
-        >
-          <img
-            src={logoUrl}
-            alt="Logotipo del portal"
-            style={{
-              width: "72px",
-              height: "72px",
-              objectFit: "contain",
-              borderRadius: "16px",
-              backgroundColor: "#f8fbff",
-              padding: "8px",
-              border: "1px solid rgba(21, 55, 94, 0.1)"
-            }}
-          />
-          <span
-            style={{
-              fontSize: "14px",
-              fontWeight: 700,
-              letterSpacing: "0.12em",
-              textTransform: "uppercase",
-              color: "#355c7d"
-            }}
-          >
-            Portal de autoservicio
-          </span>
-        </div>
-
-        <div style={{ display: "grid", gap: "18px", maxWidth: "640px" }}>
-          <h1
-            style={{
-              margin: 0,
-              fontSize: "clamp(2.5rem, 5vw, 4.2rem)",
-              lineHeight: 1.05,
-              color: "#14324b"
-            }}
-          >
-            Facturación en línea
-          </h1>
-
-          <p
-            style={{
-              margin: 0,
-              fontSize: "1.2rem",
-              lineHeight: 1.6,
-              color: "#355c7d",
-              fontWeight: 600
-            }}
-          >
-            Portal de autoservicio para consultar y gestionar el proceso de
-            facturación de forma simple, clara y centralizada.
-          </p>
-
-          <p
-            style={{
-              margin: 0,
-              fontSize: "1rem",
-              lineHeight: 1.8,
-              color: "#52667a"
-            }}
-          >
-            Esta primera interfaz presenta una vista estática del portal con un
-            enfoque profesional y ordenado, lista para evolucionar en fases
-            posteriores sin agregar todavía lógica operativa.
-          </p>
-        </div>
-
-        <div>
-          <Link
-            href="/iniciar-facturacion"
-            style={{
-              borderRadius: "999px",
-              background: "linear-gradient(135deg, #0f5b8d 0%, #1f7aa5 100%)",
-              color: "#ffffff",
-              padding: "16px 28px",
-              fontSize: "1rem",
-              fontWeight: 700,
-              cursor: "pointer",
-              boxShadow: "0 14px 32px rgba(15, 91, 141, 0.24)",
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center"
-            }}
-          >
-            Iniciar facturación
-          </Link>
-        </div>
+    <>
+      <section className="portal-home-hero">
+        <PortalCarousel
+          items={carouselItems}
+          className="portal-carousel--hero"
+          showOverlayContent={false}
+        />
       </section>
-    </main>
+
+      <div className="portal-page portal-page--home">
+        <section className="portal-grid-two portal-grid-two--home-intro">
+          <div className="portal-card portal-hero-copy">
+            <span className="portal-eyebrow">BIENVENIDO</span>
+            <div style={{ display: "grid", gap: "18px" }}>
+              <p className="portal-lead">
+                1. Prepara tu número de ticket
+                <br />
+                2. Clic en botón Iniciar facturación
+              </p>
+            </div>
+
+            <div className="portal-cta-row">
+              <Link href="/iniciar-facturacion" className="portal-button">
+                Iniciar facturación
+              </Link>
+
+              <a className="portal-link-button" href="https://www.grupocoresa.com/" target="_blank" rel="noreferrer">
+                Conocer ecommerce CORESA
+              </a>
+            </div>
+
+            <div className="portal-info-box" />
+          </div>
+
+          <div className="portal-card portal-hero-copy portal-home-reference-card">
+            <span className="portal-eyebrow">Dónde está mi número de folio o ticket</span>
+            <img
+              className="portal-home-reference-image"
+              src="/Imagenes/DondeEstaElNumero.jpg"
+              alt="Referencia de ubicación del número de folio o ticket"
+            />
+          </div>
+        </section>
+
+      </div>
+    </>
   );
 }

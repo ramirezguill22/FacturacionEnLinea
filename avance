@@ -120,3 +120,14 @@ BLOQUE DE AVANCE 13 MAR 2026 FASE 5.4 CERRADA
 85. Se confirmo que el frontend responde aun con el backend local apagado, validando que ya consume Cloud Run.
 86. Se validaron en el flujo real de 5.4 los casos encontrado, no_encontrado y error_validacion.
 87. Estado actual: Fase 5.4 cerrada con backend desplegado y frontend conectado al servicio real.
+
+--------------------
+BLOQUE DE AVANCE 13 MAR 2026 FASE 5.5 CERRADA
+--------------------
+
+88. Se confirmo que el frontend publicado en Firebase App Hosting consume correctamente el backend desplegado en Cloud Run.
+89. Se validaron satisfactoriamente en ambiente publicado los casos encontrado, no_encontrado y error_validacion.
+90. Se confirmo que la navegacion entre captura y resultado funciona correctamente en la URL publica del portal.
+91. Se confirmo que los mensajes visuales y la respuesta funcional del portal son consistentes en ambiente publicado.
+92. Estado actual: Fase 5.5 cerrada y flujo inicial del portal validado en ambiente real publicado.
+93. Siguiente fase recomendada: Fase 6, reglas de elegibilidad del ticket.
