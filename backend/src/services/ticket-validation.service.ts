@@ -1,23 +1,11 @@
 import { config } from "../config/env";
 import { AppError } from "../errors/app-error";
+import { validateTicketAgainstNetSuite } from "./netsuite-ticket.service";
+import type { NetSuiteTicketValidationResponse } from "../types/netsuite";
 
 type TicketValidationRequest = {
   numeroTicket?: unknown;
 };
-
-type TicketValidationResponse =
-  | {
-      ok: true;
-      encontrado: true;
-      estatus: "ticket_encontrado";
-      mensaje: "Ticket encontrado";
-    }
-  | {
-      ok: true;
-      encontrado: false;
-      estatus: "ticket_no_encontrado";
-      mensaje: "No se encontró una orden de venta con ese ticket";
-    };
 
 function normalizeTicketValue(numeroTicket: unknown): string {
   if (typeof numeroTicket !== "string") {
@@ -39,22 +27,10 @@ function normalizeTicketValue(numeroTicket: unknown): string {
   return normalizedTicket;
 }
 
-export function validateTicket(request: TicketValidationRequest): TicketValidationResponse {
+export async function validateTicket(
+  request: TicketValidationRequest
+): Promise<NetSuiteTicketValidationResponse> {
   const normalizedTicket = normalizeTicketValue(request.numeroTicket);
 
-  if (normalizedTicket === config.mockFoundTicket) {
-    return {
-      ok: true,
-      encontrado: true,
-      estatus: "ticket_encontrado",
-      mensaje: "Ticket encontrado"
-    };
-  }
-
-  return {
-    ok: true,
-    encontrado: false,
-    estatus: "ticket_no_encontrado",
-    mensaje: "No se encontró una orden de venta con ese ticket"
-  };
+  return validateTicketAgainstNetSuite({ numeroTicket: normalizedTicket });
 }

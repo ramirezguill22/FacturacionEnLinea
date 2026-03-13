@@ -11,8 +11,8 @@ export function createApp() {
   app.get("/health", (_request, response) => {
     response.status(200).json({
       ok: true,
-      estatus: "ok",
-      mensaje: "Servicio disponible"
+      status: "ok",
+      message: "Servicio disponible"
     });
   });
 

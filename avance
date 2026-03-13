@@ -24,3 +24,15 @@ BLOQUE DE ESTADO ACTUAL
 19. Caso validado manualmente: ticket encontrado con el valor mock TICKET-PRUEBA-0000001.
 20. Casos disponibles para prueba inmediata: ticket encontrado, ticket no encontrado y error de validacion por longitud.
 21. Estado de avance actual: fase visual inicial completada y Fase 2 base operativa con respuesta simulada.
+22. RESTlet de NetSuite implementado en carpeta separada /netsuite y desplegado en ambiente de prueba.
+23. RESTlet validado manualmente desde Postman en al menos un caso exitoso.
+24. Matriz de validacion documentada para casos: encontrado, no_encontrado, duplicado, error_validacion y error_interno.
+25. Siguiente condicion para cerrar Fase 3: ejecutar y confirmar en NetSuite los casos no_encontrado, duplicado y error_interno con datos controlados.
+26. Etapa 4.1 aplicada en /backend: configuracion local segura preparada mediante variables de entorno.
+27. Archivo backend/.env.example ampliado con placeholders para la futura conexion real con NetSuite.
+28. El backend ya puede leer configuracion local desde backend/.env sin versionar secretos en Git.
+29. Etapa 4.2 aplicada en /backend: cliente tecnico de NetSuite creado en una capa separada.
+30. La capa tecnica ya incluye firma TBA, cliente HTTP al RESTlet y manejo de timeout, errores de red y JSON invalido.
+31. El endpoint publico POST /api/tickets/validar ya fue conectado a la capa real de NetSuite.
+32. El backend conserva validacion local de entrada y luego delega al cliente tecnico de NetSuite.
+33. La normalizacion final para frontend aun no se aplica; el endpoint devuelve la respuesta funcional proveniente de NetSuite o un error controlado de integracion.

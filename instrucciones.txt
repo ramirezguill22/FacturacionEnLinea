@@ -33,7 +33,7 @@ Comandos para ejecutar el proyecto localmente
 
     -- $env:Path = 'C:\Program Files\nodejs;' + $env:Path; npm.cmd run dev
 
-11. Probar el endpoint mock:
+11. Probar el endpoint del backend:
     POST http://localhost:8080/api/tickets/validar
 
     Body JSON:
@@ -47,13 +47,8 @@ Comandos para ejecutar el proyecto localmente
 Resultado esperado del frontend:
 Facturacion en linea
 
-Resultado esperado del backend con ticket mock valido:
-{
-  "ok": true,
-  "encontrado": true,
-  "estatus": "ticket_encontrado",
-  "mensaje": "Ticket encontrado"
-}
+Resultado esperado del backend con configuracion real valida:
+Respuesta JSON devuelta por NetSuite y propagada por el backend.
 
 Configuracion minima de Git:
 git config --global user.name "ramirezguill22"
@@ -116,31 +111,79 @@ Caso 1. Ticket encontrado:
 Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-0000001"}'
 
 Resultado esperado:
-{
-   "ok": true,
-   "encontrado": true,
-   "estatus": "ticket_encontrado",
-   "mensaje": "Ticket encontrado"
-}
+Respuesta de NetSuite para el caso `encontrado`.
 
 Caso 2. Ticket no encontrado:
 Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-9999999"}'
 
 Resultado esperado:
-{
-   "ok": true,
-   "encontrado": false,
-   "estatus": "ticket_no_encontrado",
-   "mensaje": "No se encontró una orden de venta con ese ticket"
-}
+Respuesta de NetSuite para el caso `no_encontrado`.
 
 Caso 3. Error de validacion por longitud:
 try { Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"123"}' } catch { $_.ErrorDetails.Message }
 
 Resultado esperado:
-{
-   "ok": false,
-   "estatus": "error_validacion",
-   "mensaje": "El número de ticket debe tener al menos 20 caracteres"
-}
+Respuesta local de validacion del backend antes de llamar a NetSuite.
+
+==============================
+BLOQUE RAPIDO ETAPA 4.1 LOCAL
+==============================
+
+Objetivo:
+Dejar listo el backend para usar configuracion segura local desde un archivo .env no versionado.
+
+Archivo local sugerido:
+c:\Users\guill\Documents\Portal_Facturacion_Online\backend\.env
+
+Base recomendada:
+PORT=8080
+TICKET_MIN_LENGTH=20
+MOCK_FOUND_TICKET=TICKET-PRUEBA-0000001
+NETSUITE_RESTLET_URL=
+NETSUITE_ACCOUNT=
+NETSUITE_REALM=
+NETSUITE_CONSUMER_KEY=
+NETSUITE_CONSUMER_SECRET=
+NETSUITE_TOKEN_ID=
+NETSUITE_TOKEN_SECRET=
+
+Nota:
+El archivo backend\.env no debe subirse al repositorio. Solo usar backend\.env.example como plantilla.
+
+==============================
+BLOQUE RAPIDO ETAPA 4.2 LOCAL
+==============================
+
+Objetivo:
+Crear una capa tecnica dedicada para NetSuite dentro del backend sin reemplazar todavia el endpoint publico mock.
+
+Archivos clave creados:
+backend\src\integrations\netsuite\netsuite-tba.ts
+backend\src\integrations\netsuite\netsuite-restlet-client.ts
+backend\src\services\netsuite-ticket.service.ts
+
+Que hace esta etapa:
+- genera el header OAuth 1.0 para TBA
+- prepara la llamada HTTP al RESTlet de NetSuite
+- controla timeout, errores de red y respuesta JSON invalida
+- deja encapsulada la llamada en una capa separada del endpoint publico
+
+Que no hace todavia:
+- no normaliza aun la respuesta final para el frontend
+- no conecta todavia la UI en tiempo real con esta respuesta real
+
+==============================
+BLOQUE RAPIDO ETAPA 4.3 LOCAL
+==============================
+
+Objetivo:
+Conectar el endpoint publico POST /api/tickets/validar con la capa real de NetSuite.
+
+Estado actual:
+- el endpoint ya usa la capa tecnica real de NetSuite
+- el backend mantiene la validacion local de entrada
+- la respuesta del endpoint depende de que backend/.env tenga valores reales y validos
+
+Importante:
+Si backend/.env tiene valores de ejemplo o credenciales no validas, el endpoint respondera con error de integracion y no con el mock anterior.
 
