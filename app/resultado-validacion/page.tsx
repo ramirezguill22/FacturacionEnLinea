@@ -194,9 +194,33 @@ export default async function ValidationResultPage({
             ) : null}
             {ticket || salesOrderTranId || salesOrderId ? (
               <div className="portal-result-summary">
-                {ticket ? <div>Ticket: {ticket}</div> : null}
-                {salesOrderTranId ? <div>Orden de venta: {salesOrderTranId}</div> : null}
-                {salesOrderId ? <div>Id interno: {salesOrderId}</div> : null}
+                <div className="portal-result-summary__head">
+                  <span className="portal-eyebrow">Datos localizados</span>
+                  <strong>Resumen de la orden encontrada</strong>
+                </div>
+
+                <div className="portal-result-summary__grid">
+                  {ticket ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Ticket</span>
+                      <strong className="portal-result-meta__value">{ticket}</strong>
+                    </div>
+                  ) : null}
+
+                  {salesOrderTranId ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Orden de venta</span>
+                      <strong className="portal-result-meta__value">{salesOrderTranId}</strong>
+                    </div>
+                  ) : null}
+
+                  {salesOrderId ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Id interno</span>
+                      <strong className="portal-result-meta__value">{salesOrderId}</strong>
+                    </div>
+                  ) : null}
+                </div>
               </div>
             ) : null}
             {matches ? (
