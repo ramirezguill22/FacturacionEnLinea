@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, Suspense, useEffect, useState } from "react";
 
 type ValidationResponse = {
   success: boolean;
@@ -17,7 +17,7 @@ type ValidationResponse = {
   };
 };
 
-export default function BillingStartPage() {
+function BillingStartPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [ticket, setTicket] = useState("");
@@ -122,5 +122,13 @@ export default function BillingStartPage() {
         </div>
       </section>
     </div>
+  );
+}
+
+export default function BillingStartPage() {
+  return (
+    <Suspense fallback={null}>
+      <BillingStartPageContent />
+    </Suspense>
   );
 }
