@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { FormEvent, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
 type ValidationResponse = {
   success: boolean;
@@ -19,9 +19,26 @@ type ValidationResponse = {
 
 export default function BillingStartPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [ticket, setTicket] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [hasPrefilledFromQuery, setHasPrefilledFromQuery] = useState(false);
+
+  useEffect(() => {
+    if (hasPrefilledFromQuery) {
+      return;
+    }
+
+    const ticketFromQuery = searchParams.get("ticket")?.trim() ?? "";
+
+    if (!ticketFromQuery) {
+      return;
+    }
+
+    setTicket(ticketFromQuery);
+    setHasPrefilledFromQuery(true);
+  }, [hasPrefilledFromQuery, searchParams]);
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
