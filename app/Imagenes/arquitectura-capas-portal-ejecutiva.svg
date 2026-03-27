@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1080" viewBox="0 0 1600 1080" role="img" aria-labelledby="title desc">
+  <title id="title">Arquitectura ejecutiva del Portal de Facturacion Online</title>
+  <desc id="desc">Version ejecutiva del diagrama de arquitectura por capas del portal, con flujo principal, capas clave y tecnologias principales.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f5fbfd"/>
+      <stop offset="100%" stop-color="#e7f1f8"/>
+    </linearGradient>
+    <linearGradient id="hero" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0b6d95"/>
+      <stop offset="100%" stop-color="#18a7d2"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#0f7fa8"/>
+      <stop offset="100%" stop-color="#17a2cc"/>
+    </linearGradient>
+    <linearGradient id="frontend" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eef8fc"/>
+    </linearGradient>
+    <linearGradient id="backend" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#eef9f4"/>
+    </linearGradient>
+    <linearGradient id="external" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fffef8"/>
+      <stop offset="100%" stop-color="#fff1d5"/>
+    </linearGradient>
+    <linearGradient id="platform" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#f3f1ff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#6c8aa0" flood-opacity="0.18"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2c5d75"/>
+    </marker>
+    <style>
+      .title { font: 700 44px 'Segoe UI', Arial, sans-serif; fill: #213445; }
+      .subtitle { font: 500 20px 'Segoe UI', Arial, sans-serif; fill: #f4fbff; }
+      .section { font: 700 30px 'Segoe UI', Arial, sans-serif; fill: #223544; }
+      .box { font: 700 24px 'Segoe UI', Arial, sans-serif; fill: #213241; }
+      .body { font: 400 19px 'Segoe UI', Arial, sans-serif; fill: #4f6676; }
+      .small { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #5f7484; }
+      .chip { font: 700 15px 'Segoe UI', Arial, sans-serif; fill: #0d6486; }
+      .chip-dark { font: 700 15px 'Segoe UI', Arial, sans-serif; fill: #ffffff; }
+      .accent-green { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #196b43; }
+      .accent-gold { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #8a5a12; }
+      .accent-violet { font: 700 16px 'Segoe UI', Arial, sans-serif; fill: #5a4bb0; }
+      .footer { font: 600 15px 'Segoe UI', Arial, sans-serif; fill: #556b7c; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="1080" fill="url(#bg)"/>
+
+  <rect x="56" y="42" width="1488" height="132" rx="30" fill="url(#hero)" filter="url(#shadow)"/>
+  <text x="92" y="103" class="title" fill="#ffffff">Arquitectura ejecutiva del Portal de Facturacion Online</text>
+  <text x="92" y="144" class="subtitle">Vista de negocio y tecnologia del flujo de validacion de tickets</text>
+
+  <rect x="112" y="210" width="1376" height="82" rx="24" fill="url(#flow)" filter="url(#shadow)"/>
+  <rect x="138" y="228" width="212" height="46" rx="23" fill="#ffffff" opacity="0.18"/>
+  <text x="186" y="258" class="chip-dark">Usuario</text>
+  <text x="380" y="258" class="chip-dark">Next.js</text>
+  <text x="598" y="258" class="chip-dark">API interna</text>
+  <text x="842" y="258" class="chip-dark">Express</text>
+  <text x="1050" y="258" class="chip-dark">NetSuite RESTlet</text>
+  <text x="1320" y="258" class="chip-dark">Respuesta</text>
+  <line x1="334" y1="251" x2="362" y2="251" stroke="#ffffff" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="514" y1="251" x2="580" y2="251" stroke="#ffffff" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="760" y1="251" x2="824" y2="251" stroke="#ffffff" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="920" y1="251" x2="1030" y2="251" stroke="#ffffff" stroke-width="4" marker-end="url(#arrow)"/>
+  <line x1="1236" y1="251" x2="1300" y2="251" stroke="#ffffff" stroke-width="4" marker-end="url(#arrow)"/>
+
+  <rect x="90" y="340" width="1420" height="230" rx="30" fill="url(#frontend)" stroke="#cfe3ef" stroke-width="2" filter="url(#shadow)"/>
+  <text x="128" y="392" class="section">Capa 1. Frontend del portal</text>
+  <text x="128" y="428" class="body">Presenta la experiencia del usuario y centraliza la navegacion, captura del ticket y visualizacion del resultado.</text>
+
+  <rect x="128" y="458" width="404" height="82" rx="22" fill="#ffffff" stroke="#dbe8f0"/>
+  <text x="156" y="491" class="box">Experiencia del usuario</text>
+  <text x="156" y="520" class="body">Landing, captura, resultado</text>
+
+  <rect x="560" y="458" width="404" height="82" rx="22" fill="#ffffff" stroke="#dbe8f0"/>
+  <text x="588" y="491" class="box">Tecnologias</text>
+  <text x="588" y="520" class="body">Next.js 16, React 19, TypeScript</text>
+
+  <rect x="992" y="458" width="480" height="82" rx="22" fill="#ffffff" stroke="#dbe8f0"/>
+  <text x="1020" y="491" class="box">Punto de integracion</text>
+  <text x="1020" y="520" class="body">El frontend no llama directo al backend; usa una API interna como fachada.</text>
+
+  <rect x="128" y="586" width="200" height="40" rx="20" fill="#dff3fb"/>
+  <text x="172" y="612" class="chip">App Router</text>
+  <rect x="344" y="586" width="176" height="40" rx="20" fill="#dff3fb"/>
+  <text x="390" y="612" class="chip">Layout comun</text>
+  <rect x="536" y="586" width="192" height="40" rx="20" fill="#dff3fb"/>
+  <text x="580" y="612" class="chip">Styles globales</text>
+  <rect x="744" y="586" width="228" height="40" rx="20" fill="#dff3fb"/>
+  <text x="786" y="612" class="chip">/api/tickets/validar</text>
+
+  <rect x="90" y="640" width="1420" height="210" rx="30" fill="url(#backend)" stroke="#d2eadf" stroke-width="2" filter="url(#shadow)"/>
+  <text x="128" y="692" class="section">Capa 2. Backend de validacion</text>
+  <text x="128" y="728" class="body">Recibe el ticket, valida entrada, ejecuta la consulta a NetSuite y devuelve una respuesta normalizada para la UI.</text>
+
+  <rect x="128" y="758" width="404" height="82" rx="22" fill="#ffffff" stroke="#d8ece2"/>
+  <text x="156" y="791" class="box">Servicio backend</text>
+  <text x="156" y="820" class="body">Node.js, Express, TypeScript</text>
+
+  <rect x="560" y="758" width="404" height="82" rx="22" fill="#ffffff" stroke="#d8ece2"/>
+  <text x="588" y="791" class="box">Capas internas</text>
+  <text x="588" y="820" class="body">Routes, controllers, services, middleware</text>
+
+  <rect x="992" y="758" width="480" height="82" rx="22" fill="#ffffff" stroke="#d8ece2"/>
+  <text x="1020" y="791" class="box">Salida funcional</text>
+  <text x="1020" y="820" class="body">success, status, message y data para el frontend</text>
+
+  <rect x="90" y="900" width="690" height="122" rx="28" fill="url(#external)" stroke="#ecd8a4" stroke-width="2" filter="url(#shadow)"/>
+  <text x="128" y="952" class="section">Capa 3. Integracion NetSuite</text>
+  <text x="128" y="987" class="body">RESTlet de NetSuite autenticado con Token Based Authentication OAuth 1.0 y firma HMAC-SHA256.</text>
+  <text x="128" y="1012" class="accent-gold">Objetivo: localizar y validar la Sales Order a partir del ticket</text>
+
+  <rect x="820" y="900" width="690" height="122" rx="28" fill="url(#platform)" stroke="#d9d5fb" stroke-width="2" filter="url(#shadow)"/>
+  <text x="858" y="952" class="section">Capa 4. Plataforma y despliegue</text>
+  <text x="858" y="987" class="body">Frontend publicado en Firebase App Hosting y backend desplegado en Google Cloud Run con variables de entorno.</text>
+  <text x="858" y="1012" class="accent-violet">Objetivo: separar presentacion, logica y conectividad externa</text>
+
+  <line x1="800" y1="292" x2="800" y2="340" stroke="#2c5d75" stroke-width="5" marker-end="url(#arrow)"/>
+  <line x1="800" y1="570" x2="800" y2="640" stroke="#2c5d75" stroke-width="5" marker-end="url(#arrow)"/>
+  <line x1="430" y1="850" x2="430" y2="900" stroke="#2c5d75" stroke-width="5" marker-end="url(#arrow)"/>
+  <line x1="1170" y1="850" x2="1170" y2="900" stroke="#2c5d75" stroke-width="5" marker-end="url(#arrow)"/>
+
+  <text x="824" y="323" class="small">Flujo principal</text>
+  <text x="824" y="610" class="accent-green">Fachada interna y consumo controlado</text>
+  <text x="455" y="886" class="accent-gold">Consulta segura</text>
+  <text x="1196" y="886" class="accent-violet">Operacion publicada</text>
+
+  <text x="92" y="1054" class="footer">Version ejecutiva. Archivo SVG editable en app/Imagenes/arquitectura-capas-portal-ejecutiva.svg</text>
+</svg>
