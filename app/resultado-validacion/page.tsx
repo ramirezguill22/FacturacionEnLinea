@@ -135,6 +135,7 @@ export default async function ValidationResultPage({
   const currency = resolvedSearchParams.currency ?? "";
   const matches = resolvedSearchParams.matches ?? "";
   const totalDisplay = [total, currency].filter(Boolean).join(" ");
+  const shouldShowTotalCard = Boolean(totalDisplay || salesOrderId);
   const presentation =
     statusPresentationMap[status] ?? statusPresentationMap.sin_resultado;
 
@@ -219,10 +220,12 @@ export default async function ValidationResultPage({
                     </div>
                   ) : null}
 
-                  {totalDisplay ? (
+                  {shouldShowTotalCard ? (
                     <div className="portal-result-meta">
                       <span className="portal-result-meta__label">Total</span>
-                      <strong className="portal-result-meta__value">{totalDisplay}</strong>
+                      <strong className="portal-result-meta__value">
+                        {totalDisplay || "No disponible"}
+                      </strong>
                     </div>
                   ) : null}
                 </div>
