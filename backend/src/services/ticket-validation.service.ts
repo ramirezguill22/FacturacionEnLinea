@@ -48,6 +48,8 @@ function normalizeTicketValidationResponse(
       ticket: result.ticket ?? requestedTicket,
       salesOrderId: result.salesOrderId,
       salesOrderTranId: result.salesOrderTranId,
+      total: result.total,
+      currency: result.currency,
       matches: result.matches,
       ticketField: result.ticketField
     }

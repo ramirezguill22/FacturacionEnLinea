@@ -17,6 +17,8 @@ export type NetSuiteTicketValidationResponse = {
   ticket?: string;
   salesOrderId?: string;
   salesOrderTranId?: string;
+  total?: string;
+  currency?: string;
   matches?: number;
   ticketField?: string;
   detail?: string;
@@ -30,6 +32,8 @@ export type TicketValidationApiResponse = {
     ticket?: string;
     salesOrderId?: string;
     salesOrderTranId?: string;
+    total?: string;
+    currency?: string;
     matches?: number;
     ticketField?: string;
   };

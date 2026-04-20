@@ -38,11 +38,11 @@ Comandos para ejecutar el proyecto localmente
 
     Body JSON:
     {
-      "numeroTicket": "TICKET-PRUEBA-0000001"
+         "ticket": "TICKET-PRUEBA-0000001"
     }
 
 12. Comando PowerShell para probar el endpoint:
-    Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-0000001"}'
+      Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"TICKET-PRUEBA-0000001"}'
 
 Resultado esperado del frontend:
 Facturacion en linea
@@ -108,19 +108,19 @@ BLOQUE RAPIDO PRUEBAS
 =====================
 
 Caso 1. Ticket encontrado:
-Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-0000001"}'
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"TICKET-PRUEBA-0000001"}'
 
 Resultado esperado:
 Respuesta de NetSuite para el caso `encontrado`.
 
 Caso 2. Ticket no encontrado:
-Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"TICKET-PRUEBA-9999999"}'
+Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"TICKET-PRUEBA-9999999"}'
 
 Resultado esperado:
 Respuesta de NetSuite para el caso `no_encontrado`.
 
 Caso 3. Error de validacion por longitud:
-try { Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"numeroTicket":"123"}' } catch { $_.ErrorDetails.Message }
+try { Invoke-RestMethod -Method Post -Uri 'http://localhost:8080/api/tickets/validar' -ContentType 'application/json' -Body '{"ticket":"123"}' } catch { $_.ErrorDetails.Message }
 
 Resultado esperado:
 Respuesta local de validacion del backend antes de llamar a NetSuite.
@@ -257,6 +257,30 @@ Contrato actual del backend hacia frontend:
       "salesOrderTranId": "SO106789"
    }
 }
+
+=========================================
+BLOQUE URL DE ENTRADA CON QR O EXTERNO
+=========================================
+
+Flujo oficial para precarga desde QR o sistema externo:
+- el QR no invoca directo el endpoint POST
+- el QR debe abrir la pagina del portal
+- la pagina del portal toma el parametro ticket y lo precarga en el formulario
+
+Ruta publica esperada:
+https://TU-DOMINIO/iniciar-facturacion?ticket=VALOR_CAPTURADO
+
+Ejemplo local:
+http://localhost:3000/iniciar-facturacion?ticket=294411548332216498
+
+Comportamiento esperado:
+- si ticket viene en la URL, el campo de captura aparece precargado
+- el usuario puede modificar ese valor manualmente antes de enviar
+- si ticket no viene en la URL, la pagina funciona como captura manual normal
+- al continuar, el frontend sigue llamando a POST /api/tickets/validar con el valor actual del input
+
+Nota tecnica importante:
+La implementacion en Next.js usa Suspense alrededor de la lectura del query param para mantener compatibilidad con el build de App Router en Next.js 16 y Firebase App Hosting.
 
 Notas:
 - success solo es true cuando el status es encontrado

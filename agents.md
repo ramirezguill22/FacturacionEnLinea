@@ -218,6 +218,19 @@ Objetivo: continuar el flujo solo si el ticket es válido.
 - RFC
 - razón social
 - correo
+
+## Aclaracion sobre QR y precarga del ticket
+
+1. El codigo QR no forma parte de este proyecto ni se genera dentro del portal.
+2. El QR solo debe invocar una URL publica del portal y pasar el ticket como query param.
+3. La ruta funcional para este caso es `/iniciar-facturacion?ticket=VALOR_CAPTURADO`.
+4. La pagina `/iniciar-facturacion` debe leer el parametro `ticket` solo como ayuda de precarga del mismo campo que el usuario puede capturar manualmente.
+5. La captura manual del ticket debe permanecer disponible siempre, incluso cuando la pagina reciba un valor por URL.
+6. El usuario debe poder editar, corregir o borrar el valor precargado antes de continuar.
+7. El QR no debe invocar directamente el endpoint `POST /api/tickets/validar`, porque ese endpoint recibe JSON en el body y no esta disenado como URL publica de lectura directa.
+8. El flujo oficial queda definido asi: QR o sistema externo -> URL del portal con `ticket` -> pagina `/iniciar-facturacion` -> `POST /api/tickets/validar`.
+9. Si la URL no trae `ticket`, la pantalla debe comportarse exactamente igual que en el flujo manual actual.
+10. Si la URL trae `ticket`, el formulario debe precargar ese valor sin crear un flujo alterno ni duplicar la logica de validacion.
 - uso CFDI
 - navegación desde validación exitosa
 

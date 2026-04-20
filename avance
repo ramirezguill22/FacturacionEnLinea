@@ -131,3 +131,15 @@ BLOQUE DE AVANCE 13 MAR 2026 FASE 5.5 CERRADA
 91. Se confirmo que los mensajes visuales y la respuesta funcional del portal son consistentes en ambiente publicado.
 92. Estado actual: Fase 5.5 cerrada y flujo inicial del portal validado en ambiente real publicado.
 93. Siguiente fase recomendada: Fase 6, reglas de elegibilidad del ticket.
+
+--------------------
+BLOQUE DE AVANCE 27 MAR 2026 QR PREFILL
+--------------------
+
+94. La pantalla /iniciar-facturacion ya acepta un parametro opcional ticket en la URL para precargar el numero del ticket.
+95. La captura manual del ticket se mantiene activa y no fue sustituida por la precarga desde URL.
+96. El flujo oficial para QR queda definido como URL del portal con query string y no como invocacion directa al endpoint POST.
+97. Ejemplo funcional soportado: /iniciar-facturacion?ticket=ABC123456.
+98. El submit del formulario no cambia; la pantalla sigue enviando el valor actual del input a /api/tickets/validar.
+99. Se ajusto la pagina de inicio de facturacion para usar Suspense alrededor de la lectura de search params y cumplir con el build de Next.js 16 en Firebase App Hosting.
+100. Estado actual: el portal puede recibir un ticket precargado por URL, permitir correccion manual y continuar con la validacion normal del flujo.

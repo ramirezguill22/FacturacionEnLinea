@@ -30,7 +30,9 @@ define(["N/search"], function(search) {
       message: "Ticket localizado correctamente.",
       ticket: ticket,
       salesOrderId: result.getValue({ name: "internalid" }),
-      salesOrderTranId: result.getValue({ name: "tranid" })
+      salesOrderTranId: result.getValue({ name: "tranid" }),
+      total: result.getValue({ name: "total" }),
+      currency: result.getText({ name: "currency" })
     };
   }
 
@@ -44,7 +46,9 @@ define(["N/search"], function(search) {
       ],
       columns: [
         search.createColumn({ name: "internalid" }),
-        search.createColumn({ name: "tranid" })
+        search.createColumn({ name: "tranid" }),
+        search.createColumn({ name: "total" }),
+        search.createColumn({ name: "currency" })
       ]
     });
 

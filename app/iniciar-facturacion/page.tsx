@@ -12,6 +12,8 @@ type ValidationResponse = {
     ticket?: string;
     salesOrderId?: string;
     salesOrderTranId?: string;
+    total?: string;
+    currency?: string;
     matches?: number;
     ticketField?: string;
   };
@@ -67,6 +69,8 @@ function BillingStartPageContent() {
         ticket: result.data?.ticket ?? ticket.trim(),
         salesOrderId: result.data?.salesOrderId ?? "",
         salesOrderTranId: result.data?.salesOrderTranId ?? "",
+        total: result.data?.total ?? "",
+        currency: result.data?.currency ?? "",
         matches: result.data?.matches ? String(result.data.matches) : "",
         ticketField: result.data?.ticketField ?? ""
       });

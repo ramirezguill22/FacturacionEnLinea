@@ -113,6 +113,8 @@ type ValidationResultPageProps = {
     ticket?: string;
     salesOrderId?: string;
     salesOrderTranId?: string;
+    total?: string;
+    currency?: string;
     matches?: string;
   }>;
 };
@@ -129,7 +131,10 @@ export default async function ValidationResultPage({
   const ticket = resolvedSearchParams.ticket ?? "";
   const salesOrderId = resolvedSearchParams.salesOrderId ?? "";
   const salesOrderTranId = resolvedSearchParams.salesOrderTranId ?? "";
+  const total = resolvedSearchParams.total ?? "";
+  const currency = resolvedSearchParams.currency ?? "";
   const matches = resolvedSearchParams.matches ?? "";
+  const totalDisplay = [total, currency].filter(Boolean).join(" ");
   const presentation =
     statusPresentationMap[status] ?? statusPresentationMap.sin_resultado;
 
@@ -192,7 +197,7 @@ export default async function ValidationResultPage({
             {presentation.followUp ? (
               <div className="portal-detail-card">{presentation.followUp}</div>
             ) : null}
-            {ticket || salesOrderTranId || salesOrderId ? (
+            {ticket || salesOrderTranId || totalDisplay || salesOrderId ? (
               <div className="portal-result-summary">
                 <div className="portal-result-summary__head">
                   <span className="portal-eyebrow">Datos localizados</span>
@@ -214,10 +219,10 @@ export default async function ValidationResultPage({
                     </div>
                   ) : null}
 
-                  {salesOrderId ? (
+                  {totalDisplay ? (
                     <div className="portal-result-meta">
-                      <span className="portal-result-meta__label">Id interno</span>
-                      <strong className="portal-result-meta__value">{salesOrderId}</strong>
+                      <span className="portal-result-meta__label">Total</span>
+                      <strong className="portal-result-meta__value">{totalDisplay}</strong>
                     </div>
                   ) : null}
                 </div>
