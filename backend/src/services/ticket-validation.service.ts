@@ -50,6 +50,9 @@ function normalizeTicketValidationResponse(
       salesOrderTranId: result.salesOrderTranId,
       total: result.total,
       currency: result.currency,
+      dateCreated: result.dateCreated,
+      ovFacturableEnPortal: result.ovFacturableEnPortal,
+      ticketFacturado: result.ticketFacturado,
       matches: result.matches,
       ticketField: result.ticketField
     }

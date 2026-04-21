@@ -1,0 +1,78 @@
+Tutorial rapido para actualizar y redeployar el backend en Cloud Run
+
+Proyecto:
+facturacion-en-linea-b2577
+
+Servicio:
+cloud-run-portal-facturacion-en-linea
+
+Region:
+us-central1
+
+nombre del servicio en Netsuite
+ticketSearchService.js ubicación: SuiteScripts > Portal_Facturacion_Online > services
+
+==================================================
+1. Ir a la carpeta del backend
+==================================================
+cd c:\Users\guill\Documents\Portal_Facturacion_Online\backend
+
+==================================================
+2. Verificar gcloud
+==================================================
+gcloud --version
+
+Si PowerShell bloquea gcloud.ps1, usar gcloud.cmd:
+& "C:\Users\guill\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\gcloud.cmd" --version
+
+==================================================
+3. Confirmar o fijar el proyecto activo
+==================================================
+gcloud config get-value project
+
+gcloud config set project facturacion-en-linea-b2577
+
+==================================================
+4. Redeploy del backend a Cloud Run
+==================================================
+gcloud run deploy cloud-run-portal-facturacion-en-linea --source . --region us-central1 --allow-unauthenticated
+
+==================================================
+5. URL del servicio
+==================================================
+https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app
+
+==================================================
+6. Probar el endpoint publicado en Cloud Run
+==================================================
+$body = '{"ticket":"2026042017047719275"}'
+Invoke-RestMethod -Method Post -Uri 'https://cloud-run-portal-facturacion-en-linea-188969880965.us-central1.run.app/api/tickets/validar' -ContentType 'application/json' -Body $body | ConvertTo-Json -Depth 10
+
+Resultado esperado cuando total y currency ya estan publicados:
+{
+  "success": true,
+  "status": "encontrado",
+  "message": "Ticket localizado correctamente.",
+  "data": {
+    "ticket": "2026042017047719275",
+    "salesOrderId": "7719275",
+    "salesOrderTranId": "OV665827-A",
+    "total": "352.07",
+    "currency": "MXN"
+  }
+}
+
+==================================================
+7. Probar el endpoint del portal publicado
+==================================================
+$body = '{"ticket":"2026042017047719275"}'
+Invoke-RestMethod -Method Post -Uri 'https://facturacion.grupocoresa.com/api/tickets/validar' -ContentType 'application/json' -Body $body | ConvertTo-Json -Depth 10
+
+==================================================
+8. Si el portal no refleja el cambio visual
+==================================================
+- Recargar el navegador con Ctrl+F5
+- Validar nuevamente el ticket desde cero
+- Confirmar que Cloud Run ya responde con total y currency antes de revisar la UI
+
+

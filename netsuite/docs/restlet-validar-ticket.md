@@ -62,7 +62,12 @@ Respuesta esperada:
   "message": "Ticket localizado correctamente.",
   "ticket": "VALOR_EXISTENTE_UNICO",
   "salesOrderId": "12345",
-  "salesOrderTranId": "SO106789"
+  "salesOrderTranId": "SO106789",
+  "total": "352.07",
+  "currency": "MXN",
+  "dateCreated": "2026-04-20T17:04:00",
+  "ovFacturableEnPortal": true,
+  "ticketFacturado": false
 }
 ```
 
@@ -197,6 +202,7 @@ Reglas:
 - `status` debe ser `encontrado`
 - `ticket` debe regresar el valor recibido
 - `salesOrderId` y `salesOrderTranId` deben venir cuando exista coincidencia unica
+- `total`, `currency`, `dateCreated`, `ovFacturableEnPortal` y `ticketFacturado` pueden viajar como metadatos adicionales para validaciones posteriores del portal
 
 ### Caso `no_encontrado`
 

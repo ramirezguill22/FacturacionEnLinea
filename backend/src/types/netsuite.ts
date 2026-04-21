@@ -19,6 +19,9 @@ export type NetSuiteTicketValidationResponse = {
   salesOrderTranId?: string;
   total?: string;
   currency?: string;
+  dateCreated?: string;
+  ovFacturableEnPortal?: boolean | string;
+  ticketFacturado?: boolean | string;
   matches?: number;
   ticketField?: string;
   detail?: string;
@@ -34,6 +37,9 @@ export type TicketValidationApiResponse = {
     salesOrderTranId?: string;
     total?: string;
     currency?: string;
+    dateCreated?: string;
+    ovFacturableEnPortal?: boolean | string;
+    ticketFacturado?: boolean | string;
     matches?: number;
     ticketField?: string;
   };

@@ -143,3 +143,20 @@ BLOQUE DE AVANCE 27 MAR 2026 QR PREFILL
 98. El submit del formulario no cambia; la pantalla sigue enviando el valor actual del input a /api/tickets/validar.
 99. Se ajusto la pagina de inicio de facturacion para usar Suspense alrededor de la lectura de search params y cumplir con el build de Next.js 16 en Firebase App Hosting.
 100. Estado actual: el portal puede recibir un ticket precargado por URL, permitir correccion manual y continuar con la validacion normal del flujo.
+
+--------------------
+BLOQUE DE AVANCE 20 ABR 2026 TOTAL Y MONEDA
+--------------------
+
+101. Se extendio la respuesta funcional de la orden encontrada para incluir los campos total y currency provenientes de la Sales Order en NetSuite.
+102. El backend normalizado ya propaga total y currency dentro de data hacia el frontend del portal.
+103. La pantalla /resultado-validacion sustituyo el bloque visual Id interno por el bloque TOTAL sin alterar el look and feel actual del portal.
+104. El valor visual definido para TOTAL queda compuesto como total + espacio + currency.
+105. Se redeployo el backend en Cloud Run para publicar la nueva respuesta con total y currency.
+106. Se valido directamente en Cloud Run que la respuesta JSON ya devuelve total y currency para el ticket encontrado.
+107. Se valido directamente en el endpoint publicado del portal que total y currency ya viajan correctamente en la respuesta.
+108. Estado actual: el portal ya puede mostrar el TOTAL real de la orden encontrada usando el importe y la moneda devueltos por NetSuite.
+109. Se incorporaron tambien los campos dateCreated, ovFacturableEnPortal y ticketFacturado en la respuesta funcional del caso encontrado desde NetSuite.
+110. El backend ya normaliza y propaga estos tres campos adicionales dentro de data para que el portal pueda usarlos en validaciones posteriores.
+111. El flujo entre /iniciar-facturacion y /resultado-validacion ya transporta estos metadatos junto con ticket, orden, total y moneda.
+112. Estado actual: el portal ya dispone de fecha de creacion, indicador de facturable en portal e indicador de ticket facturado como insumos para reglas futuras de elegibilidad.

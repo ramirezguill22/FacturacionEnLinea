@@ -32,7 +32,10 @@ define(["N/search"], function(search) {
       salesOrderId: result.getValue({ name: "internalid" }),
       salesOrderTranId: result.getValue({ name: "tranid" }),
       total: result.getValue({ name: "total" }),
-      currency: result.getText({ name: "currency" })
+      currency: result.getText({ name: "currency" }),
+      dateCreated: result.getValue({ name: "datecreated" }),
+      ovFacturableEnPortal: result.getValue({ name: "custbody_ovfacturableenportal" }),
+      ticketFacturado: result.getValue({ name: "custbody_ticket_facturado" })
     };
   }
 
@@ -48,7 +51,10 @@ define(["N/search"], function(search) {
         search.createColumn({ name: "internalid" }),
         search.createColumn({ name: "tranid" }),
         search.createColumn({ name: "total" }),
-        search.createColumn({ name: "currency" })
+        search.createColumn({ name: "currency" }),
+        search.createColumn({ name: "datecreated" }),
+        search.createColumn({ name: "custbody_ovfacturableenportal" }),
+        search.createColumn({ name: "custbody_ticket_facturado" })
       ]
     });
 
