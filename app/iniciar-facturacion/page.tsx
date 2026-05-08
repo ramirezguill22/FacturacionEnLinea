@@ -14,6 +14,9 @@ type ValidationResponse = {
     salesOrderTranId?: string;
     total?: string;
     currency?: string;
+    dateCreated?: string;
+    ovFacturableEnPortal?: boolean | string;
+    ticketFacturado?: boolean | string;
     matches?: number;
     ticketField?: string;
   };
@@ -71,6 +74,15 @@ function BillingStartPageContent() {
         salesOrderTranId: result.data?.salesOrderTranId ?? "",
         total: result.data?.total ?? "",
         currency: result.data?.currency ?? "",
+        dateCreated: result.data?.dateCreated ?? "",
+        ovFacturableEnPortal:
+          result.data?.ovFacturableEnPortal !== undefined
+            ? String(result.data.ovFacturableEnPortal)
+            : "",
+        ticketFacturado:
+          result.data?.ticketFacturado !== undefined
+            ? String(result.data.ticketFacturado)
+            : "",
         matches: result.data?.matches ? String(result.data.matches) : "",
         ticketField: result.data?.ticketField ?? ""
       });

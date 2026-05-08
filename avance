@@ -160,3 +160,24 @@ BLOQUE DE AVANCE 20 ABR 2026 TOTAL Y MONEDA
 110. El backend ya normaliza y propaga estos tres campos adicionales dentro de data para que el portal pueda usarlos en validaciones posteriores.
 111. El flujo entre /iniciar-facturacion y /resultado-validacion ya transporta estos metadatos junto con ticket, orden, total y moneda.
 112. Estado actual: el portal ya dispone de fecha de creacion, indicador de facturable en portal e indicador de ticket facturado como insumos para reglas futuras de elegibilidad.
+
+--------------------
+BLOQUE DE AVANCE 08 MAY 2026 VALIDACION VISUAL FRONTEND
+--------------------
+
+113. Se agrego en la pantalla /resultado-validacion una nueva seccion visual ubicada debajo de Datos localizados y arriba de los botones de accion.
+114. La nueva seccion usa el encabezado VALIDACION DE TICKET y muestra un mensaje binario para el usuario sobre si el ticket es valido o no para facturar en linea.
+115. El mensaje favorable definido para esta seccion es: Tu ticket es valido para facturar en linea.
+116. El mensaje no favorable definido para esta seccion es: Tu ticket no es valido para facturar en linea.
+117. La implementacion actual de esta validacion vive solo en el frontend y no modifica todavia el contrato funcional del backend ni la logica del RESTlet.
+118. La pagina /iniciar-facturacion fue ajustada para transportar por query string los campos dateCreated, ovFacturableEnPortal y ticketFacturado hacia /resultado-validacion.
+119. La pagina /resultado-validacion fue ajustada para leer esos tres valores desde search params y evaluarlos localmente antes de renderizar la nueva seccion.
+120. La regla visual actual considera un ticket valido solo si dateCreated pertenece al mes actual, ovFacturableEnPortal equivale a true y ticketFacturado equivale a false.
+121. La interpretacion de ovFacturableEnPortal y ticketFacturado en frontend ya contempla valores booleanos y sus variantes serializadas como texto true false T y F.
+122. Si alguno de los tres datos llega vacio, ambiguo o no interpretable, la seccion resuelve el caso como no valido para evitar falsos positivos en la UI.
+123. El parseo de fecha en esta primera version se realiza localmente en frontend mediante Date de JavaScript, por lo que sigue dependiendo del formato efectivo que entregue NetSuite en dateCreated.
+124. Esta implementacion no introdujo cambios en backend/, netsuite/ ni en el contrato de respuesta del endpoint publico; el ajuste quedo acotado a dos archivos del frontend.
+125. Archivos modificados en este ajuste: app/iniciar-facturacion/page.tsx y app/resultado-validacion/page.tsx.
+126. Se ejecutaron validaciones de errores sobre ambos archivos modificados y no se detectaron errores de TypeScript o sintaxis asociados al cambio.
+127. Estado actual: el portal ya puede mostrar una validacion visual de elegibilidad en la pantalla de resultado usando los tres metadatos funcionales disponibles hoy.
+128. Siguiente verificacion recomendada: probar localmente un ticket real para confirmar el formato efectivo de dateCreated y validar que la regla del mes actual se interprete correctamente en la UI.

@@ -105,6 +105,43 @@ const statusPresentationMap: Record<string, StatusPresentation> = {
   }
 };
 
+function parseNetSuiteBoolean(value: string | undefined): boolean | null {
+  if (!value) {
+    return null;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+
+  if (normalizedValue === "true" || normalizedValue === "t") {
+    return true;
+  }
+
+  if (normalizedValue === "false" || normalizedValue === "f") {
+    return false;
+  }
+
+  return null;
+}
+
+function isDateInCurrentMonth(value: string | undefined): boolean {
+  if (!value) {
+    return false;
+  }
+
+  const parsedDate = new Date(value);
+
+  if (Number.isNaN(parsedDate.getTime())) {
+    return false;
+  }
+
+  const currentDate = new Date();
+
+  return (
+    parsedDate.getFullYear() === currentDate.getFullYear() &&
+    parsedDate.getMonth() === currentDate.getMonth()
+  );
+}
+
 type ValidationResultPageProps = {
   searchParams: Promise<{
     success?: string;
@@ -116,6 +153,9 @@ type ValidationResultPageProps = {
     total?: string;
     currency?: string;
     matches?: string;
+    dateCreated?: string;
+    ovFacturableEnPortal?: string;
+    ticketFacturado?: string;
   }>;
 };
 
@@ -134,8 +174,19 @@ export default async function ValidationResultPage({
   const total = resolvedSearchParams.total ?? "";
   const currency = resolvedSearchParams.currency ?? "";
   const matches = resolvedSearchParams.matches ?? "";
+  const dateCreated = resolvedSearchParams.dateCreated ?? "";
+  const ovFacturableEnPortal = resolvedSearchParams.ovFacturableEnPortal ?? "";
+  const ticketFacturado = resolvedSearchParams.ticketFacturado ?? "";
   const totalDisplay = [total, currency].filter(Boolean).join(" ");
   const shouldShowTotalCard = Boolean(totalDisplay || salesOrderId);
+  const isCreatedInCurrentMonth = isDateInCurrentMonth(dateCreated);
+  const isOvFacturableEnPortal = parseNetSuiteBoolean(ovFacturableEnPortal) === true;
+  const isTicketNotFacturado = parseNetSuiteBoolean(ticketFacturado) === false;
+  const isTicketValidForOnlineBilling =
+    isCreatedInCurrentMonth && isOvFacturableEnPortal && isTicketNotFacturado;
+  const shouldShowTicketValidationSection = Boolean(
+    dateCreated || ovFacturableEnPortal || ticketFacturado
+  );
   const presentation =
     statusPresentationMap[status] ?? statusPresentationMap.sin_resultado;
 
@@ -233,6 +284,18 @@ export default async function ValidationResultPage({
             ) : null}
             {matches ? (
               <div className="portal-detail-card">Coincidencias detectadas: {matches}</div>
+            ) : null}
+            {shouldShowTicketValidationSection ? (
+              <div className="portal-result-summary">
+                <div className="portal-result-summary__head">
+                  <span className="portal-eyebrow">Validación de ticket</span>
+                  <strong>
+                    {isTicketValidForOnlineBilling
+                      ? "Tu ticket es válido para facturar en línea"
+                      : "Tu ticket no es válido para facturar en línea"}
+                  </strong>
+                </div>
+              </div>
             ) : null}
           </div>
 
