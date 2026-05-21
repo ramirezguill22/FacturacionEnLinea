@@ -2,7 +2,7 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
-define(["N/log", "../services/ticketSearchService"], function(log, ticketSearchService) {
+define(["N/log", "../services/ticketSearchService", "../services/customerFiscalInfoService"], function(log, ticketSearchService, customerFiscalInfoService) {
   function getTicketFromRequest(requestBody) {
     if (typeof requestBody === "string") {
       return requestBody.trim();
@@ -18,6 +18,18 @@ define(["N/log", "../services/ticketSearchService"], function(log, ticketSearchS
 
     if (typeof requestBody.numeroTicket === "string") {
       return requestBody.numeroTicket.trim();
+    }
+
+    return "";
+  }
+
+  function getCustomerIdFromRequest(requestBody) {
+    if (!requestBody || typeof requestBody !== "object") {
+      return "";
+    }
+
+    if (typeof requestBody.customerId === "string") {
+      return requestBody.customerId.trim();
     }
 
     return "";
@@ -43,6 +55,26 @@ define(["N/log", "../services/ticketSearchService"], function(log, ticketSearchS
 
   function post(requestBody) {
     try {
+      const customerId = getCustomerIdFromRequest(requestBody);
+
+      if (customerId) {
+        log.debug({
+          title: "RESTlet datosFiscales - request",
+          details: {
+            customerId: customerId
+          }
+        });
+
+        const customerResponse = customerFiscalInfoService.searchByCustomerId(customerId);
+
+        log.debug({
+          title: "RESTlet datosFiscales - response",
+          details: customerResponse
+        });
+
+        return customerResponse;
+      }
+
       const ticket = getTicketFromRequest(requestBody);
 
       log.debug({

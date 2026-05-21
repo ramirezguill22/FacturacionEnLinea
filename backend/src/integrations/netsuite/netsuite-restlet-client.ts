@@ -1,6 +1,8 @@
 import { config } from "../../config/env";
 import { NetSuiteIntegrationError } from "../../errors/netsuite-integration-error";
 import type {
+  NetSuiteCustomerFiscalInfoRequest,
+  NetSuiteCustomerFiscalInfoResponse,
   NetSuiteTicketValidationRequest,
   NetSuiteTicketValidationResponse
 } from "../../types/netsuite";
@@ -25,7 +27,7 @@ function buildAbortSignal(timeoutMs: number): { signal: AbortSignal; cancel: () 
   };
 }
 
-async function parseJsonResponse(response: Response): Promise<NetSuiteTicketValidationResponse> {
+async function parseJsonResponse<TResponse>(response: Response): Promise<TResponse> {
   const rawBody = await response.text();
 
   if (!rawBody) {
@@ -33,15 +35,13 @@ async function parseJsonResponse(response: Response): Promise<NetSuiteTicketVali
   }
 
   try {
-    return JSON.parse(rawBody) as NetSuiteTicketValidationResponse;
+    return JSON.parse(rawBody) as TResponse;
   } catch {
     throw new NetSuiteIntegrationError("NetSuite devolvió una respuesta no válida en formato JSON.");
   }
 }
 
-export async function postTicketValidationToNetSuite(
-  payload: NetSuiteTicketValidationRequest
-): Promise<NetSuiteTicketValidationResponse> {
+async function postToNetSuite<TResponse>(payload: unknown): Promise<TResponse> {
   ensureNetSuiteConfig();
 
   const { signal, cancel } = buildAbortSignal(config.netSuite.timeoutMs);
@@ -65,7 +65,7 @@ export async function postTicketValidationToNetSuite(
       );
     }
 
-    return await parseJsonResponse(response);
+    return await parseJsonResponse<TResponse>(response);
   } catch (error) {
     if (error instanceof NetSuiteIntegrationError) {
       throw error;
@@ -83,4 +83,16 @@ export async function postTicketValidationToNetSuite(
   } finally {
     cancel();
   }
+}
+
+export async function postTicketValidationToNetSuite(
+  payload: NetSuiteTicketValidationRequest
+): Promise<NetSuiteTicketValidationResponse> {
+  return postToNetSuite<NetSuiteTicketValidationResponse>(payload);
+}
+
+export async function postCustomerFiscalInfoToNetSuite(
+  payload: NetSuiteCustomerFiscalInfoRequest
+): Promise<NetSuiteCustomerFiscalInfoResponse> {
+  return postToNetSuite<NetSuiteCustomerFiscalInfoResponse>(payload);
 }

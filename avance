@@ -181,3 +181,82 @@ BLOQUE DE AVANCE 08 MAY 2026 VALIDACION VISUAL FRONTEND
 126. Se ejecutaron validaciones de errores sobre ambos archivos modificados y no se detectaron errores de TypeScript o sintaxis asociados al cambio.
 127. Estado actual: el portal ya puede mostrar una validacion visual de elegibilidad en la pantalla de resultado usando los tres metadatos funcionales disponibles hoy.
 128. Siguiente verificacion recomendada: probar localmente un ticket real para confirmar el formato efectivo de dateCreated y validar que la regla del mes actual se interprete correctamente en la UI.
+
+--------------------
+BLOQUE DE AVANCE 21 MAY 2026 CONTRATO CUSTOMER ID Y AJUSTES DE VALIDACION
+--------------------
+
+129. Se ajusto la validacion visual del frontend para parsear correctamente dateCreated en el formato de NetSuite DD/MM/YYYY hh:mm AM PM en lugar de depender del parser generico de Date de JavaScript.
+130. Con ese ajuste, la regla visual del mes actual ya puede evaluar correctamente tickets cuyo dateCreated llega como texto en formato regional de NetSuite.
+131. Se mantuvieron visibles de forma temporal en la pantalla /resultado-validacion los campos de depuracion dateCreated, ovFacturableEnPortal y ticketFacturado para verificar visualmente los valores reales que recibe la UI.
+132. Se definio ampliar el contrato funcional del caso encontrado para incorporar el id interno del cliente como campo plano bajo el nombre customerId.
+133. La fuente funcional de customerId queda definida como el campo entity de la Sales Order en NetSuite.
+134. El backend fue ajustado para aceptar y propagar customerId dentro de data en la respuesta normalizada del endpoint POST /api/tickets/validar.
+135. El frontend fue ajustado para transportar customerId por query string entre pantallas del flujo, igual que los demas metadatos funcionales del ticket encontrado.
+136. La pantalla /resultado-validacion fue ajustada para leer customerId desde search params y mostrar temporalmente una tarjeta adicional Customer ID dentro de Datos localizados cuando el valor este presente.
+137. El contrato funcional actual del portal para el caso encontrado ya contempla los campos ticket, salesOrderId, salesOrderTranId, customerId, total, currency, dateCreated, ovFacturableEnPortal y ticketFacturado dentro de data.
+138. Archivos modificados para este ajuste de contrato y transporte: netsuite/src/services/ticketSearchService.js, backend/src/types/netsuite.ts, backend/src/services/ticket-validation.service.ts, app/iniciar-facturacion/page.tsx y app/resultado-validacion/page.tsx.
+139. Se ejecutaron validaciones de errores sobre los archivos TypeScript modificados en backend y frontend sin detectar errores asociados al cambio.
+140. Se realizo redeploy exitoso del backend en Cloud Run con la revision cloud-run-portal-facturacion-en-linea-00005-t9c sirviendo el 100 por ciento del trafico.
+141. Se valido directamente contra Cloud Run que el backend publicado ya responde con los campos dateCreated, ovFacturableEnPortal y ticketFacturado para el ticket encontrado.
+142. La prueba funcional publicada en Cloud Run mostro que customerId aun no aparece en la respuesta JSON, lo que indica que el backend ya desplegado no esta recibiendo ese valor desde el script efectivo de NetSuite.
+143. Estado actual: frontend y Cloud Run ya quedaron preparados para customerId, pero falta confirmar la publicacion efectiva del ajuste en el script ticketSearchService.js dentro de NetSuite para que entity viaje como customerId en la respuesta real.
+
+## Contrato actual
+
+La respuesta actual que recibe el portal desde `POST /api/tickets/validar` queda estructurada asi:
+
+```json
+{
+	"success": true,
+	"status": "encontrado",
+	"message": "Ticket localizado correctamente.",
+	"data": {
+		"ticket": "VALOR_CAPTURADO",
+		"salesOrderId": "7799209",
+		"salesOrderTranId": "OV674332-A",
+		"customerId": "ID_INTERNO_DEL_CLIENTE",
+		"total": "50.84",
+		"currency": "MXN",
+		"dateCreated": "21/05/2026 8:45 AM",
+		"ovFacturableEnPortal": true,
+		"ticketFacturado": false,
+		"matches": 0,
+		"ticketField": "custbody_ticket_venta"
+	}
+}
+```
+
+Reglas del contrato actual:
+
+- `success` indica si la respuesta se considera favorable; actualmente solo es `true` cuando `status` es `encontrado`.
+- `status` puede tomar los valores `encontrado`, `no_encontrado`, `duplicado`, `no_elegible`, `error_validacion` y `error_interno`.
+- `message` contiene el mensaje funcional asociado al resultado.
+- `data` agrupa los metadatos del ticket y de la Orden de Venta cuando existen.
+- `customerId` queda definido como campo plano dentro de `data` y su fuente funcional es `entity` en la Sales Order.
+- `matches` solo aplica funcionalmente al caso `duplicado`.
+- `ticketField` identifica el campo funcional de busqueda en NetSuite.
+
+Ejemplo funcional del caso no encontrado:
+
+```json
+{
+	"success": false,
+	"status": "no_encontrado",
+	"message": "No se encontró una Orden de Venta con ese ticket.",
+	"data": {
+		"ticket": "VALOR_CAPTURADO"
+	}
+}
+```
+
+Ejemplo funcional del caso error de validacion:
+
+```json
+{
+	"success": false,
+	"status": "error_validacion",
+	"message": "El número de ticket no es válido",
+	"data": {}
+}
+```

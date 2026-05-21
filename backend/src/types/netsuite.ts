@@ -2,6 +2,10 @@ export type NetSuiteTicketValidationRequest = {
   ticket: string;
 };
 
+export type NetSuiteCustomerFiscalInfoRequest = {
+  customerId: string;
+};
+
 export type TicketValidationStatus =
   | "encontrado"
   | "no_encontrado"
@@ -28,6 +32,25 @@ export type NetSuiteTicketValidationResponse = {
   detail?: string;
 };
 
+export type CustomerFiscalInfoStatus =
+  | "encontrado"
+  | "no_encontrado"
+  | "error_validacion"
+  | "error_interno";
+
+export type NetSuiteCustomerFiscalInfoResponse = {
+  ok: boolean;
+  status: CustomerFiscalInfoStatus;
+  message: string;
+  customerId?: string;
+  razonSocial?: string;
+  rfc?: string;
+  usoCfdi?: string;
+  regimenFiscal?: string;
+  codigoPostal?: string;
+  detail?: string;
+};
+
 export type TicketValidationApiResponse = {
   success: boolean;
   status: TicketValidationStatus;
@@ -44,5 +67,19 @@ export type TicketValidationApiResponse = {
     ticketFacturado?: boolean | string;
     matches?: number;
     ticketField?: string;
+  };
+};
+
+export type CustomerFiscalInfoApiResponse = {
+  success: boolean;
+  status: CustomerFiscalInfoStatus;
+  message: string;
+  data: {
+    customerId?: string;
+    razonSocial?: string;
+    rfc?: string;
+    usoCfdi?: string;
+    regimenFiscal?: string;
+    codigoPostal?: string;
   };
 };

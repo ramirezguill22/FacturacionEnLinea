@@ -395,10 +395,13 @@ export default async function ValidationResultPage({
             <Link href={presentation.secondaryActionHref} className="portal-link-button">
               {presentation.secondaryActionLabel}
             </Link>
-            {isTicketValidForOnlineBilling ? (
-              <button type="button" className="portal-button portal-button--success">
+            {isTicketValidForOnlineBilling && customerId ? (
+              <Link
+                href={`/datos-fiscales?customerId=${encodeURIComponent(customerId)}`}
+                className="portal-button portal-button--success"
+              >
                 Continuar y revisar datos fiscales
-              </button>
+              </Link>
             ) : null}
           </div>
         </div>
