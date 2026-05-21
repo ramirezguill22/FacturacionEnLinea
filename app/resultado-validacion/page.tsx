@@ -207,6 +207,7 @@ type ValidationResultPageProps = {
     ticket?: string;
     salesOrderId?: string;
     salesOrderTranId?: string;
+    customerId?: string;
     total?: string;
     currency?: string;
     matches?: string;
@@ -228,6 +229,7 @@ export default async function ValidationResultPage({
   const ticket = resolvedSearchParams.ticket ?? "";
   const salesOrderId = resolvedSearchParams.salesOrderId ?? "";
   const salesOrderTranId = resolvedSearchParams.salesOrderTranId ?? "";
+  const customerId = resolvedSearchParams.customerId ?? "";
   const total = resolvedSearchParams.total ?? "";
   const currency = resolvedSearchParams.currency ?? "";
   const matches = resolvedSearchParams.matches ?? "";
@@ -325,6 +327,13 @@ export default async function ValidationResultPage({
                     <div className="portal-result-meta">
                       <span className="portal-result-meta__label">Orden de venta</span>
                       <strong className="portal-result-meta__value">{salesOrderTranId}</strong>
+                    </div>
+                  ) : null}
+
+                  {customerId ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Customer ID</span>
+                      <strong className="portal-result-meta__value">{customerId}</strong>
                     </div>
                   ) : null}
 

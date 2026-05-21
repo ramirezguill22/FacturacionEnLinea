@@ -12,6 +12,7 @@ type ValidationResponse = {
     ticket?: string;
     salesOrderId?: string;
     salesOrderTranId?: string;
+    customerId?: string;
     total?: string;
     currency?: string;
     dateCreated?: string;
@@ -72,6 +73,7 @@ function BillingStartPageContent() {
         ticket: result.data?.ticket ?? ticket.trim(),
         salesOrderId: result.data?.salesOrderId ?? "",
         salesOrderTranId: result.data?.salesOrderTranId ?? "",
+        customerId: result.data?.customerId ?? "",
         total: result.data?.total ?? "",
         currency: result.data?.currency ?? "",
         dateCreated: result.data?.dateCreated ?? "",

@@ -48,6 +48,7 @@ function normalizeTicketValidationResponse(
       ticket: result.ticket ?? requestedTicket,
       salesOrderId: result.salesOrderId,
       salesOrderTranId: result.salesOrderTranId,
+      customerId: result.customerId,
       total: result.total,
       currency: result.currency,
       dateCreated: result.dateCreated,

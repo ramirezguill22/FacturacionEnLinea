@@ -31,6 +31,7 @@ define(["N/search"], function(search) {
       ticket: ticket,
       salesOrderId: result.getValue({ name: "internalid" }),
       salesOrderTranId: result.getValue({ name: "tranid" }),
+      customerId: result.getValue({ name: "entity" }),
       total: result.getValue({ name: "total" }),
       currency: result.getText({ name: "currency" }),
       dateCreated: result.getValue({ name: "datecreated" }),
@@ -50,6 +51,7 @@ define(["N/search"], function(search) {
       columns: [
         search.createColumn({ name: "internalid" }),
         search.createColumn({ name: "tranid" }),
+        search.createColumn({ name: "entity" }),
         search.createColumn({ name: "total" }),
         search.createColumn({ name: "currency" }),
         search.createColumn({ name: "datecreated" }),
