@@ -295,6 +295,29 @@ export default async function ValidationResultPage({
                       : "Tu ticket no es válido para facturar en línea"}
                   </strong>
                 </div>
+
+                <div className="portal-result-summary__grid">
+                  <div className="portal-result-meta">
+                    <span className="portal-result-meta__label">dateCreated</span>
+                    <strong className="portal-result-meta__value">
+                      {dateCreated || "No disponible"}
+                    </strong>
+                  </div>
+
+                  <div className="portal-result-meta">
+                    <span className="portal-result-meta__label">ovFacturableEnPortal</span>
+                    <strong className="portal-result-meta__value">
+                      {ovFacturableEnPortal || "No disponible"}
+                    </strong>
+                  </div>
+
+                  <div className="portal-result-meta">
+                    <span className="portal-result-meta__label">ticketFacturado</span>
+                    <strong className="portal-result-meta__value">
+                      {ticketFacturado || "No disponible"}
+                    </strong>
+                  </div>
+                </div>
               </div>
             ) : null}
           </div>
