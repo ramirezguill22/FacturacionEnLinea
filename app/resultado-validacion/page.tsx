@@ -123,14 +123,71 @@ function parseNetSuiteBoolean(value: string | undefined): boolean | null {
   return null;
 }
 
-function isDateInCurrentMonth(value: string | undefined): boolean {
+function parseNetSuiteDate(value: string | undefined): Date | null {
   if (!value) {
-    return false;
+    return null;
   }
 
-  const parsedDate = new Date(value);
+  const normalizedValue = value.trim();
+  const match = normalizedValue.match(
+    /^(\d{2})\/(\d{2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s+(AM|PM)$/i
+  );
 
-  if (Number.isNaN(parsedDate.getTime())) {
+  if (!match) {
+    return null;
+  }
+
+  const [, dayText, monthText, yearText, hourText, minuteText, meridiemText] = match;
+  const day = Number(dayText);
+  const monthIndex = Number(monthText) - 1;
+  const year = Number(yearText);
+  const minute = Number(minuteText);
+  let hour = Number(hourText);
+  const meridiem = meridiemText.toUpperCase();
+
+  if (
+    !Number.isInteger(day) ||
+    !Number.isInteger(monthIndex) ||
+    !Number.isInteger(year) ||
+    !Number.isInteger(hour) ||
+    !Number.isInteger(minute) ||
+    monthIndex < 0 ||
+    monthIndex > 11 ||
+    day < 1 ||
+    day > 31 ||
+    hour < 1 ||
+    hour > 12 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return null;
+  }
+
+  if (meridiem === "AM") {
+    hour = hour === 12 ? 0 : hour;
+  } else {
+    hour = hour === 12 ? 12 : hour + 12;
+  }
+
+  const parsedDate = new Date(year, monthIndex, day, hour, minute, 0, 0);
+
+  if (
+    parsedDate.getFullYear() !== year ||
+    parsedDate.getMonth() !== monthIndex ||
+    parsedDate.getDate() !== day ||
+    parsedDate.getHours() !== hour ||
+    parsedDate.getMinutes() !== minute
+  ) {
+    return null;
+  }
+
+  return parsedDate;
+}
+
+function isDateInCurrentMonth(value: string | undefined): boolean {
+  const parsedDate = parseNetSuiteDate(value);
+
+  if (!parsedDate) {
     return false;
   }
 
