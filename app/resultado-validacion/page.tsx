@@ -395,6 +395,11 @@ export default async function ValidationResultPage({
             <Link href={presentation.secondaryActionHref} className="portal-link-button">
               {presentation.secondaryActionLabel}
             </Link>
+            {isTicketValidForOnlineBilling ? (
+              <button type="button" className="portal-button portal-button--success">
+                Continuar y revisar datos fiscales
+              </button>
+            ) : null}
           </div>
         </div>
 

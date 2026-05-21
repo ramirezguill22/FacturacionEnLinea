@@ -302,6 +302,11 @@ a {
   opacity: 0.72;
 }
 
+.portal-button--success {
+  background: linear-gradient(135deg, #1c9d5b 0%, #157946 100%);
+  box-shadow: 0 14px 32px rgba(28, 157, 91, 0.24);
+}
+
 .portal-link-button {
   color: var(--portal-cyan-deep);
   font-size: 15px;
