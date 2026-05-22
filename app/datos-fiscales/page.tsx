@@ -21,6 +21,11 @@ type CustomerFiscalInfoResponse = {
 function FiscalDataPageContent() {
   const searchParams = useSearchParams();
   const customerId = searchParams.get("customerId")?.trim() ?? "";
+  const ticket = searchParams.get("ticket")?.trim() ?? "";
+  const salesOrderTranId = searchParams.get("salesOrderTranId")?.trim() ?? "";
+  const total = searchParams.get("total")?.trim() ?? "";
+  const currency = searchParams.get("currency")?.trim() ?? "";
+  const totalDisplay = [total, currency].filter(Boolean).join(" ");
   const [result, setResult] = useState<CustomerFiscalInfoResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -107,6 +112,38 @@ function FiscalDataPageContent() {
 
           {result?.data && result.success ? (
             <div className="portal-result-grid">
+              {ticket || salesOrderTranId || totalDisplay ? (
+                <div className="portal-result-summary">
+                  <div className="portal-result-summary__head">
+                    <span className="portal-eyebrow">Datos de la compra</span>
+                    <strong>Resumen del ticket validado</strong>
+                  </div>
+
+                  <div className="portal-result-summary__grid">
+                    {ticket ? (
+                      <div className="portal-result-meta">
+                        <span className="portal-result-meta__label">Ticket</span>
+                        <strong className="portal-result-meta__value">{ticket}</strong>
+                      </div>
+                    ) : null}
+
+                    {salesOrderTranId ? (
+                      <div className="portal-result-meta">
+                        <span className="portal-result-meta__label">Orden de venta</span>
+                        <strong className="portal-result-meta__value">{salesOrderTranId}</strong>
+                      </div>
+                    ) : null}
+
+                    {totalDisplay ? (
+                      <div className="portal-result-meta">
+                        <span className="portal-result-meta__label">Total</span>
+                        <strong className="portal-result-meta__value">{totalDisplay}</strong>
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+              ) : null}
+
               <div className="portal-result-summary">
                 <div className="portal-result-summary__head">
                   <span className="portal-eyebrow">Información fiscal localizada</span>

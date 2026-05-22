@@ -243,6 +243,13 @@ export default async function ValidationResultPage({
   const isTicketNotFacturado = parseNetSuiteBoolean(ticketFacturado) === false;
   const isTicketValidForOnlineBilling =
     isCreatedInCurrentMonth && isOvFacturableEnPortal && isTicketNotFacturado;
+  const fiscalDataQuery = new URLSearchParams({
+    customerId: customerId,
+    ticket: ticket,
+    salesOrderTranId: salesOrderTranId,
+    total: total,
+    currency: currency
+  }).toString();
   const shouldShowTicketValidationSection = Boolean(
     dateCreated || ovFacturableEnPortal || ticketFacturado
   );
@@ -397,7 +404,7 @@ export default async function ValidationResultPage({
             </Link>
             {isTicketValidForOnlineBilling && customerId ? (
               <Link
-                href={`/datos-fiscales?customerId=${encodeURIComponent(customerId)}`}
+                href={`/datos-fiscales?${fiscalDataQuery}`}
                 className="portal-button portal-button--success"
               >
                 Continuar y revisar datos fiscales
