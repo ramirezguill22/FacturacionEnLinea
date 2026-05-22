@@ -12,6 +12,7 @@ type CustomerFiscalInfoResponse = {
     customerId?: string;
     razonSocial?: string;
     rfc?: string;
+    usoCfdiId?: string;
     usoCfdi?: string;
     regimenFiscal?: string;
     codigoPostal?: string;
@@ -26,6 +27,13 @@ function FiscalDataPageContent() {
   const total = searchParams.get("total")?.trim() ?? "";
   const currency = searchParams.get("currency")?.trim() ?? "";
   const totalDisplay = [total, currency].filter(Boolean).join(" ");
+  const modificationQuery = new URLSearchParams({
+    customerId: customerId,
+    ticket: ticket,
+    salesOrderTranId: salesOrderTranId,
+    total: total,
+    currency: currency
+  }).toString();
   const [result, setResult] = useState<CustomerFiscalInfoResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -204,13 +212,14 @@ function FiscalDataPageContent() {
             >
               Generar y envíar factura
             </button>
-            <button
-              type="button"
-              className="portal-button portal-button--warning"
-              onClick={() => setActionMessage("Implementar botón Modificar datos fiscales")}
-            >
-              Modificar datos fiscales
-            </button>
+            {result?.data && result.success ? (
+              <Link
+                href={`/datos-fiscales-modificacion?${modificationQuery}`}
+                className="portal-button portal-button--warning"
+              >
+                Modificar datos fiscales
+              </Link>
+            ) : null}
           </div>
         </div>
       </section>

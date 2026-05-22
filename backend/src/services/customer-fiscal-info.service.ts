@@ -40,6 +40,7 @@ function normalizeCustomerFiscalInfoResponse(
       customerId: result.customerId ?? requestedCustomerId,
       razonSocial: result.razonSocial,
       rfc: result.rfc,
+      usoCfdiId: result.usoCfdiId,
       usoCfdi: result.usoCfdi,
       regimenFiscal: result.regimenFiscal,
       codigoPostal: result.codigoPostal

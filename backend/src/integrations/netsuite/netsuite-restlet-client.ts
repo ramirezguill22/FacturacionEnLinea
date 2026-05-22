@@ -4,7 +4,9 @@ import type {
   NetSuiteCustomerFiscalInfoRequest,
   NetSuiteCustomerFiscalInfoResponse,
   NetSuiteTicketValidationRequest,
-  NetSuiteTicketValidationResponse
+  NetSuiteTicketValidationResponse,
+  NetSuiteUsoCfdiCatalogRequest,
+  NetSuiteUsoCfdiCatalogResponse
 } from "../../types/netsuite";
 import { buildNetSuiteTbaAuthorization } from "./netsuite-tba";
 
@@ -95,4 +97,10 @@ export async function postCustomerFiscalInfoToNetSuite(
   payload: NetSuiteCustomerFiscalInfoRequest
 ): Promise<NetSuiteCustomerFiscalInfoResponse> {
   return postToNetSuite<NetSuiteCustomerFiscalInfoResponse>(payload);
+}
+
+export async function postUsoCfdiCatalogToNetSuite(
+  payload: NetSuiteUsoCfdiCatalogRequest
+): Promise<NetSuiteUsoCfdiCatalogResponse> {
+  return postToNetSuite<NetSuiteUsoCfdiCatalogResponse>(payload);
 }

@@ -6,6 +6,10 @@ export type NetSuiteCustomerFiscalInfoRequest = {
   customerId: string;
 };
 
+export type NetSuiteUsoCfdiCatalogRequest = {
+  catalogId: "customlist_cfdi_uso";
+};
+
 export type TicketValidationStatus =
   | "encontrado"
   | "no_encontrado"
@@ -45,9 +49,25 @@ export type NetSuiteCustomerFiscalInfoResponse = {
   customerId?: string;
   razonSocial?: string;
   rfc?: string;
+  usoCfdiId?: string;
   usoCfdi?: string;
   regimenFiscal?: string;
   codigoPostal?: string;
+  detail?: string;
+};
+
+export type UsoCfdiCatalogStatus = "encontrado" | "error_validacion" | "error_interno";
+
+export type UsoCfdiCatalogOption = {
+  id: string;
+  text: string;
+};
+
+export type NetSuiteUsoCfdiCatalogResponse = {
+  ok: boolean;
+  status: UsoCfdiCatalogStatus;
+  message: string;
+  options?: UsoCfdiCatalogOption[];
   detail?: string;
 };
 
@@ -78,8 +98,18 @@ export type CustomerFiscalInfoApiResponse = {
     customerId?: string;
     razonSocial?: string;
     rfc?: string;
+    usoCfdiId?: string;
     usoCfdi?: string;
     regimenFiscal?: string;
     codigoPostal?: string;
+  };
+};
+
+export type UsoCfdiCatalogApiResponse = {
+  success: boolean;
+  status: UsoCfdiCatalogStatus;
+  message: string;
+  data: {
+    options: UsoCfdiCatalogOption[];
   };
 };

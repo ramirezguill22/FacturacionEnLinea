@@ -1,5 +1,6 @@
 import express from "express";
 
+import { catalogRouter } from "./routes/catalog.routes";
 import { customerRouter } from "./routes/customer.routes";
 import { errorHandler } from "./middleware/error-handler";
 import { ticketRouter } from "./routes/ticket.routes";
@@ -17,6 +18,7 @@ export function createApp() {
     });
   });
 
+  app.use("/api/catalogos", catalogRouter);
   app.use("/api/tickets", ticketRouter);
   app.use("/api/clientes", customerRouter);
   app.use(errorHandler);

@@ -50,6 +50,7 @@ define(["N/record", "N/search"], function(record, search) {
       customerId: customerId,
       razonSocial: result.getValue({ name: "custentity_cfdi_nombrefiscal" }),
       rfc: result.getValue({ name: "custentity_rfc" }),
+      usoCfdiId: result.getValue({ name: "custentity_cte_usocfdi" }),
       usoCfdi: result.getText({ name: "custentity_cte_usocfdi" }),
       regimenFiscal: result.getText({ name: "custentity_regimenfiscal_ce" }),
       codigoPostal: codigoPostal

@@ -280,3 +280,23 @@ BLOQUE DE AVANCE 21 MAY 2026 DATOS FISCALES DEL CLIENTE
 156. Este ajuste mantiene intacto el contrato hacia backend y frontend, ya que codigoPostal sigue devolviendose como campo plano dentro de data.
 157. Archivos modificados para incorporar el flujo fiscal: netsuite/src/restlets/validarTicketRestlet.js, netsuite/src/services/customerFiscalInfoService.js, backend/src/types/netsuite.ts, backend/src/integrations/netsuite/netsuite-restlet-client.ts, backend/src/services/netsuite-customer.service.ts, backend/src/services/customer-fiscal-info.service.ts, backend/src/controllers/customer.controller.ts, backend/src/routes/customer.routes.ts, backend/src/app.ts, app/lib/backend/routes.ts, app/api/clientes/datos-fiscales/route.ts, app/datos-fiscales/page.tsx y app/resultado-validacion/page.tsx.
 158. Estado actual: frontend, backend y contrato ya quedaron preparados para mostrar informacion fiscal real del cliente; para que opere en ambiente publicado se requiere tener actualizado en NetSuite el RESTlet y el servicio customerFiscalInfoService.js.
+
+--------------------
+BLOQUE DE AVANCE 22 MAY 2026 ACCIONES EN DATOS FISCALES Y RESUMEN DE COMPRA
+--------------------
+
+159. La pantalla /datos-fiscales fue extendida para incluir dos acciones nuevas alineadas con el flujo posterior del proceso.
+160. Se agrego un boton verde con la etiqueta Generar y envíar factura.
+161. Se agrego un boton amarillo con la etiqueta Modificar datos fiscales.
+162. Ambos botones quedaron implementados temporalmente con mensajes placeholder en la misma pantalla para reservar el punto de integracion funcional posterior.
+163. El boton Generar y envíar factura muestra temporalmente el mensaje Implementar botón Generar y envíar factura.
+164. El boton Modificar datos fiscales muestra temporalmente el mensaje Implementar botón Modificar datos fiscales.
+165. Se agrego una variante visual amarilla del boton dentro del layout compartido para mantener consistencia con el estilo actual del portal.
+166. La navegacion desde /resultado-validacion hacia /datos-fiscales fue ampliada para transportar tambien por query params el ticket, la orden de venta, el total y la moneda, ademas de customerId.
+167. La ruta /datos-fiscales ya lee esos query params y construye un nuevo bloque visual previo al resumen fiscal con los datos de la compra validada.
+168. La nueva seccion usa el encabezado Datos de la compra y el subtitulo Resumen del ticket validado.
+169. Dentro de esa seccion ya se muestran Ticket, Orden de venta y Total, donde Total queda compuesto como total + espacio + currency para conservar el formato visual correcto.
+170. Este ajuste no requirio cambios adicionales en backend ni en NetSuite, ya que reutiliza datos ya disponibles en el flujo del frontend.
+171. Archivos modificados para los cambios del dia de hoy: app/datos-fiscales/page.tsx, app/resultado-validacion/page.tsx y app/globals.css.
+172. Se ejecutaron validaciones de errores sobre los archivos de frontend modificados y no se detectaron errores asociados a estos ajustes.
+173. Estado actual: la ruta /datos-fiscales ya muestra tanto el resumen fiscal del cliente como el resumen de la compra validada, y ya incorpora dos acciones visibles para las siguientes fases del proceso.

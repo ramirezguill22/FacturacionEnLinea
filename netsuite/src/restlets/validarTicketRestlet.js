@@ -2,7 +2,7 @@
  * @NApiVersion 2.1
  * @NScriptType Restlet
  */
-define(["N/log", "../services/ticketSearchService", "../services/customerFiscalInfoService"], function(log, ticketSearchService, customerFiscalInfoService) {
+define(["N/log", "../services/ticketSearchService", "../services/customerFiscalInfoService", "../services/usoCfdiCatalogService"], function(log, ticketSearchService, customerFiscalInfoService, usoCfdiCatalogService) {
   function getTicketFromRequest(requestBody) {
     if (typeof requestBody === "string") {
       return requestBody.trim();
@@ -35,6 +35,18 @@ define(["N/log", "../services/ticketSearchService", "../services/customerFiscalI
     return "";
   }
 
+  function getCatalogIdFromRequest(requestBody) {
+    if (!requestBody || typeof requestBody !== "object") {
+      return "";
+    }
+
+    if (typeof requestBody.catalogId === "string") {
+      return requestBody.catalogId.trim();
+    }
+
+    return "";
+  }
+
   function buildValidationErrorResponse() {
     return {
       ok: false,
@@ -55,6 +67,26 @@ define(["N/log", "../services/ticketSearchService", "../services/customerFiscalI
 
   function post(requestBody) {
     try {
+      const catalogId = getCatalogIdFromRequest(requestBody);
+
+      if (catalogId === "customlist_cfdi_uso") {
+        log.debug({
+          title: "RESTlet catalogoUsoCfdi - request",
+          details: {
+            catalogId: catalogId
+          }
+        });
+
+        const catalogResponse = usoCfdiCatalogService.getUsoCfdiCatalog();
+
+        log.debug({
+          title: "RESTlet catalogoUsoCfdi - response",
+          details: catalogResponse
+        });
+
+        return catalogResponse;
+      }
+
       const customerId = getCustomerIdFromRequest(requestBody);
 
       if (customerId) {
