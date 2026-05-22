@@ -45,6 +45,7 @@ function FiscalDataModificationPageContent() {
   const [usoCfdiOptions, setUsoCfdiOptions] = useState<Array<{ id: string; text: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [codigoPostal, setCodigoPostal] = useState("");
   const [usoCfdiId, setUsoCfdiId] = useState("");
 
@@ -151,6 +152,7 @@ function FiscalDataModificationPageContent() {
           ) : null}
 
           {errorMessage ? <div className="portal-error-box">{errorMessage}</div> : null}
+          {actionMessage ? <div className="portal-error-box">{actionMessage}</div> : null}
 
           {result?.data && result.success ? (
             <div className="portal-result-grid">
@@ -238,7 +240,7 @@ function FiscalDataModificationPageContent() {
                       </label>
                     </div>
 
-                    <div className="portal-result-meta">
+                    <div className="portal-result-meta portal-result-meta--wide">
                       <label className="portal-form" style={{ gap: "10px" }}>
                         <span className="portal-result-meta__label">Uso de CFDI</span>
                         <select
@@ -275,6 +277,13 @@ function FiscalDataModificationPageContent() {
             }).toString()}`} className="portal-link-button">
               Regresar a datos fiscales
             </Link>
+            <button
+              type="button"
+              className="portal-button portal-button--success"
+              onClick={() => setActionMessage("Implementar botón Generar y envíar factura")}
+            >
+              Generar y envíar factura
+            </button>
           </div>
         </div>
       </section>
