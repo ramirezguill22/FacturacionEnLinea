@@ -227,6 +227,19 @@ function FiscalDataModificationPageContent() {
 
                     <div className="portal-result-meta">
                       <label className="portal-form" style={{ gap: "10px" }}>
+                        <span className="portal-result-meta__label">Código postal</span>
+                        <input
+                          className="portal-input"
+                          type="text"
+                          value={codigoPostal}
+                          onChange={(event) => setCodigoPostal(event.target.value)}
+                          required
+                        />
+                      </label>
+                    </div>
+
+                    <div className="portal-result-meta">
+                      <label className="portal-form" style={{ gap: "10px" }}>
                         <span className="portal-result-meta__label">Uso de CFDI</span>
                         <select
                           className="portal-input"
@@ -241,19 +254,6 @@ function FiscalDataModificationPageContent() {
                             </option>
                           ))}
                         </select>
-                      </label>
-                    </div>
-
-                    <div className="portal-result-meta">
-                      <label className="portal-form" style={{ gap: "10px" }}>
-                        <span className="portal-result-meta__label">Código postal</span>
-                        <input
-                          className="portal-input"
-                          type="text"
-                          value={codigoPostal}
-                          onChange={(event) => setCodigoPostal(event.target.value)}
-                          required
-                        />
                       </label>
                     </div>
                   </div>
