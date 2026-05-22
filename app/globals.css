@@ -307,6 +307,11 @@ a {
   box-shadow: 0 14px 32px rgba(28, 157, 91, 0.24);
 }
 
+.portal-button--warning {
+  background: linear-gradient(135deg, #d8a428 0%, #b88412 100%);
+  box-shadow: 0 14px 32px rgba(184, 132, 18, 0.24);
+}
+
 .portal-link-button {
   color: var(--portal-cyan-deep);
   font-size: 15px;

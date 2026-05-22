@@ -24,6 +24,7 @@ function FiscalDataPageContent() {
   const [result, setResult] = useState<CustomerFiscalInfoResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!customerId) {
@@ -102,6 +103,7 @@ function FiscalDataPageContent() {
           ) : null}
 
           {errorMessage ? <div className="portal-error-box">{errorMessage}</div> : null}
+          {actionMessage ? <div className="portal-error-box">{actionMessage}</div> : null}
 
           {result?.data && result.success ? (
             <div className="portal-result-grid">
@@ -158,6 +160,20 @@ function FiscalDataPageContent() {
             <Link href="/" className="portal-link-button">
               Regresar al inicio
             </Link>
+            <button
+              type="button"
+              className="portal-button portal-button--success"
+              onClick={() => setActionMessage("Implementar botón Generar y envíar factura")}
+            >
+              Generar y envíar factura
+            </button>
+            <button
+              type="button"
+              className="portal-button portal-button--warning"
+              onClick={() => setActionMessage("Implementar botón Modificar datos fiscales")}
+            >
+              Modificar datos fiscales
+            </button>
           </div>
         </div>
       </section>

@@ -260,3 +260,23 @@ Ejemplo funcional del caso error de validacion:
 	"data": {}
 }
 ```
+
+--------------------
+BLOQUE DE AVANCE 21 MAY 2026 DATOS FISCALES DEL CLIENTE
+--------------------
+
+144. Se agrego una nueva ruta frontend /datos-fiscales como siguiente paso del flujo despues de una validacion favorable del ticket.
+145. El boton Continuar y revisar datos fiscales en /resultado-validacion fue ajustado para navegar a /datos-fiscales solo cuando el ticket resulta valido y customerId esta disponible.
+146. La nueva pantalla /datos-fiscales lee customerId desde query params y ejecuta una consulta nueva al backend para recuperar informacion fiscal real del cliente.
+147. El frontend incorporo una nueva ruta interna en /api/clientes/datos-fiscales para proxyear la consulta al backend desplegado.
+148. El backend incorporo un nuevo endpoint POST /api/clientes/datos-fiscales para solicitar la informacion fiscal del cliente a NetSuite a partir de customerId.
+149. El contrato funcional del backend para datos fiscales del cliente ya contempla los campos customerId, razonSocial, rfc, usoCfdi, regimenFiscal y codigoPostal dentro de data.
+150. En NetSuite se extendio el RESTlet actual para aceptar requests con customerId y responder informacion fiscal del cliente sin crear un RESTlet separado.
+151. Se agrego el servicio customerFiscalInfoService.js en NetSuite para centralizar la busqueda de datos fiscales del cliente.
+152. Los campos fiscales definidos para mostrarse en el portal son: Razon Social desde custentity_cfdi_nombrefiscal, RFC desde custentity_rfc, Uso de CFDI desde custentity_cte_usocfdi con getText, Regimen fiscal desde custentity_regimenfiscal_ce con getText y Codigo postal.
+153. Durante la primera implementacion del flujo fiscal se detecto que billzip no es una columna valida en la busqueda de Customer bajo SuiteScript Search, generando el error SSS_INVALID_SRCH_COL.
+154. Para resolverlo, la obtencion de codigoPostal se corrigio para cargar el customer con N/record y recorrer la sublista addressbook hasta encontrar la linea donde defaultbilling es verdadero.
+155. El codigo postal final ya no depende de billzip sino del valor zip del subrecord addressbookaddress asociado a la direccion de facturacion predeterminada del cliente.
+156. Este ajuste mantiene intacto el contrato hacia backend y frontend, ya que codigoPostal sigue devolviendose como campo plano dentro de data.
+157. Archivos modificados para incorporar el flujo fiscal: netsuite/src/restlets/validarTicketRestlet.js, netsuite/src/services/customerFiscalInfoService.js, backend/src/types/netsuite.ts, backend/src/integrations/netsuite/netsuite-restlet-client.ts, backend/src/services/netsuite-customer.service.ts, backend/src/services/customer-fiscal-info.service.ts, backend/src/controllers/customer.controller.ts, backend/src/routes/customer.routes.ts, backend/src/app.ts, app/lib/backend/routes.ts, app/api/clientes/datos-fiscales/route.ts, app/datos-fiscales/page.tsx y app/resultado-validacion/page.tsx.
+158. Estado actual: frontend, backend y contrato ya quedaron preparados para mostrar informacion fiscal real del cliente; para que opere en ambiente publicado se requiere tener actualizado en NetSuite el RESTlet y el servicio customerFiscalInfoService.js.

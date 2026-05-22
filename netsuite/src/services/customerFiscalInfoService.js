@@ -1,7 +1,7 @@
 /**
  * @NApiVersion 2.1
  */
-define(["N/search"], function(search) {
+define(["N/record", "N/search"], function(record, search) {
   function buildNoEncontradoResponse(customerId) {
     return {
       ok: true,
@@ -11,7 +11,38 @@ define(["N/search"], function(search) {
     };
   }
 
-  function buildEncontradoResponse(customerId, result) {
+  function getDefaultBillingZip(customerId) {
+    const customerRecord = record.load({
+      type: record.Type.CUSTOMER,
+      id: customerId,
+      isDynamic: false
+    });
+    const lineCount = customerRecord.getLineCount({ sublistId: "addressbook" });
+
+    for (let line = 0; line < lineCount; line += 1) {
+      const isDefaultBilling = customerRecord.getSublistValue({
+        sublistId: "addressbook",
+        fieldId: "defaultbilling",
+        line: line
+      });
+
+      if (!isDefaultBilling) {
+        continue;
+      }
+
+      const addressSubrecord = customerRecord.getSublistSubrecord({
+        sublistId: "addressbook",
+        fieldId: "addressbookaddress",
+        line: line
+      });
+
+      return addressSubrecord.getValue({ fieldId: "zip" }) || "";
+    }
+
+    return "";
+  }
+
+  function buildEncontradoResponse(customerId, result, codigoPostal) {
     return {
       ok: true,
       status: "encontrado",
@@ -21,7 +52,7 @@ define(["N/search"], function(search) {
       rfc: result.getValue({ name: "custentity_rfc" }),
       usoCfdi: result.getText({ name: "custentity_cte_usocfdi" }),
       regimenFiscal: result.getText({ name: "custentity_regimenfiscal_ce" }),
-      codigoPostal: result.getValue({ name: "billzip" })
+      codigoPostal: codigoPostal
     };
   }
 
@@ -33,8 +64,7 @@ define(["N/search"], function(search) {
         search.createColumn({ name: "custentity_cfdi_nombrefiscal" }),
         search.createColumn({ name: "custentity_rfc" }),
         search.createColumn({ name: "custentity_cte_usocfdi" }),
-        search.createColumn({ name: "custentity_regimenfiscal_ce" }),
-        search.createColumn({ name: "billzip" })
+        search.createColumn({ name: "custentity_regimenfiscal_ce" })
       ]
     });
 
@@ -44,7 +74,7 @@ define(["N/search"], function(search) {
       return buildNoEncontradoResponse(customerId);
     }
 
-    return buildEncontradoResponse(customerId, results[0]);
+    return buildEncontradoResponse(customerId, results[0], getDefaultBillingZip(customerId));
   }
 
   return {
