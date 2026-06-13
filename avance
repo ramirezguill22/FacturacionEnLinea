@@ -300,3 +300,27 @@ BLOQUE DE AVANCE 22 MAY 2026 ACCIONES EN DATOS FISCALES Y RESUMEN DE COMPRA
 171. Archivos modificados para los cambios del dia de hoy: app/datos-fiscales/page.tsx, app/resultado-validacion/page.tsx y app/globals.css.
 172. Se ejecutaron validaciones de errores sobre los archivos de frontend modificados y no se detectaron errores asociados a estos ajustes.
 173. Estado actual: la ruta /datos-fiscales ya muestra tanto el resumen fiscal del cliente como el resumen de la compra validada, y ya incorpora dos acciones visibles para las siguientes fases del proceso.
+
+--------------------
+BLOQUE DE AVANCE 22 MAY 2026 MODIFICACION DE DATOS FISCALES
+--------------------
+
+174. Se implemento una nueva ruta frontend /datos-fiscales-modificacion como siguiente paso para el flujo de edicion fiscal del cliente.
+175. La navegacion desde /datos-fiscales fue ajustada para abrir /datos-fiscales-modificacion y transportar por query params customerId, ticket, salesOrderTranId, total y currency.
+176. La nueva pantalla /datos-fiscales-modificacion consulta nuevamente los datos fiscales actuales del cliente desde backend para trabajar sobre valores reales y vigentes.
+177. La nueva pantalla tambien consulta un nuevo endpoint de catalogo para recuperar las opciones de Uso de CFDI desde la lista customlist_cfdi_uso en NetSuite.
+178. Se agrego el endpoint backend GET /api/catalogos/usos-cfdi para exponer el catalogo de Uso de CFDI al frontend del portal.
+179. En NetSuite se agrego el servicio usoCfdiCatalogService.js para consultar y devolver las opciones de customlist_cfdi_uso.
+180. El contrato funcional de datos fiscales del cliente se amplio para incluir usoCfdiId ademas de usoCfdi, con el fin de preseleccionar correctamente la opcion actual en la pantalla editable.
+181. La nueva ruta /datos-fiscales-modificacion evalua el RFC del cliente para decidir el comportamiento de la interfaz.
+182. Si el RFC es distinto de XAXX010101000, la pantalla muestra una interfaz editable donde Codigo postal y Uso de CFDI son obligatorios y conservan los valores actuales del cliente.
+183. Si el RFC es exactamente XAXX010101000, la pantalla muestra temporalmente un placeholder informativo indicando que ese caso queda pendiente por implementar.
+184. La interfaz editable reutiliza el mismo look and feel de /datos-fiscales e incorpora tambien el bloque Datos de la compra con Ticket, Orden de venta y Total.
+185. Se detecto inicialmente que la lista de Uso de CFDI no cargaba porque la rama de catalogo del RESTlet no estaba activa en el ambiente efectivo; despues de publicar el ajuste correspondiente el catalogo comenzo a responder correctamente.
+186. Se aplico un ajuste visual posterior para reordenar Codigo postal y Uso de CFDI dentro de la seccion editable y mejorar la distribucion del formulario.
+187. El bloque Uso de CFDI fue finalmente ampliado para abarcar todo el ancho disponible de la seccion Informacion fiscal localizada, evitando que el select se desborde visualmente.
+188. En la ruta /datos-fiscales-modificacion se agrego tambien un boton verde temporal Generar y envíar factura, independiente del boton homonimo existente en /datos-fiscales.
+189. El nuevo boton verde de /datos-fiscales-modificacion muestra por ahora el mensaje temporal Implementar botón Generar y envíar factura.
+190. Archivos modificados para este flujo de modificacion fiscal: netsuite/src/services/customerFiscalInfoService.js, netsuite/src/restlets/validarTicketRestlet.js, netsuite/src/services/usoCfdiCatalogService.js, backend/src/types/netsuite.ts, backend/src/integrations/netsuite/netsuite-restlet-client.ts, backend/src/services/netsuite-catalog.service.ts, backend/src/services/uso-cfdi-catalog.service.ts, backend/src/controllers/catalog.controller.ts, backend/src/routes/catalog.routes.ts, backend/src/services/customer-fiscal-info.service.ts, backend/src/app.ts, app/lib/backend/routes.ts, app/api/catalogos/usos-cfdi/route.ts, app/datos-fiscales/page.tsx, app/datos-fiscales-modificacion/page.tsx y app/globals.css.
+191. Se ejecutaron validaciones de errores sobre los archivos TypeScript y TSX modificados durante esta implementacion sin detectar errores asociados al cambio.
+192. Estado actual: el portal ya permite consultar datos fiscales, entrar a una pantalla de modificacion fiscal, cargar el catalogo de Uso de CFDI y mostrar una interfaz editable condicionada por el RFC del cliente.
