@@ -5,6 +5,9 @@ export const backendRoutes = {
   clientes: {
     datosFiscales: "/api/clientes/datos-fiscales"
   },
+  facturas: {
+    generar: "/api/facturas/generar"
+  },
   tickets: {
     validar: "/api/tickets/validar"
   }

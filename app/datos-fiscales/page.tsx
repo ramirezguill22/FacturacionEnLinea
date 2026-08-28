@@ -19,6 +19,23 @@ type CustomerFiscalInfoResponse = {
   };
 };
 
+type InvoiceResponse = {
+  success: boolean;
+  estatusTimbrado?: "EXITO" | "ERROR";
+  mensaje?: string;
+  message?: string;
+  data?: {
+    facturaInternalId?: number;
+    facturaTranId?: string;
+    uuid?: string | null;
+    fechaTimbrado?: string | null;
+    registroPersonalizadoId?: number;
+  };
+  error?: {
+    etapa?: string;
+  };
+};
+
 function FiscalDataPageContent() {
   const searchParams = useSearchParams();
   const customerId = searchParams.get("customerId")?.trim() ?? "";
@@ -37,7 +54,8 @@ function FiscalDataPageContent() {
   const [result, setResult] = useState<CustomerFiscalInfoResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
+  const [invoiceResult, setInvoiceResult] = useState<InvoiceResponse | null>(null);
 
   useEffect(() => {
     if (!customerId) {
@@ -94,6 +112,54 @@ function FiscalDataPageContent() {
     };
   }, [customerId]);
 
+  async function handleGenerateInvoice() {
+    if (isGeneratingInvoice || invoiceResult) {
+      return;
+    }
+
+    if (!ticket || !salesOrderTranId) {
+      setInvoiceResult({
+        success: false,
+        message: "No fue posible identificar el ticket y la orden de venta."
+      });
+      return;
+    }
+
+    const confirmed = window.confirm(
+      "Se creará y timbrará la factura con los datos fiscales mostrados. ¿Deseas continuar?"
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setIsGeneratingInvoice(true);
+
+    try {
+      const response = await fetch("/api/facturas/generar", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          salesorder: salesOrderTranId,
+          ticket: ticket
+        })
+      });
+      const invoice = (await response.json()) as InvoiceResponse;
+
+      setInvoiceResult(invoice);
+    } catch {
+      setInvoiceResult({
+        success: false,
+        message:
+          "No fue posible confirmar el resultado de la facturación. No intentes nuevamente y solicita revisión."
+      });
+    } finally {
+      setIsGeneratingInvoice(false);
+    }
+  }
+
   return (
     <div className="portal-page">
       <section className="portal-grid-two portal-grid-single">
@@ -116,7 +182,6 @@ function FiscalDataPageContent() {
           ) : null}
 
           {errorMessage ? <div className="portal-error-box">{errorMessage}</div> : null}
-          {actionMessage ? <div className="portal-error-box">{actionMessage}</div> : null}
 
           {result?.data && result.success ? (
             <div className="portal-result-grid">
@@ -198,6 +263,65 @@ function FiscalDataPageContent() {
             </div>
           ) : null}
 
+          {invoiceResult ? (
+            <div className="portal-result-summary">
+              <div className="portal-result-summary__head">
+                <span className="portal-eyebrow">Resultado de facturación</span>
+                <strong>
+                  {invoiceResult.success
+                    ? "Factura creada y timbrada correctamente"
+                    : invoiceResult.data?.facturaInternalId
+                      ? "Factura creada con timbrado pendiente"
+                      : "No fue posible completar la facturación"}
+                </strong>
+              </div>
+
+              <div className="portal-detail-card">
+                {invoiceResult.mensaje ?? invoiceResult.message ?? "Resultado no disponible."}
+              </div>
+
+              {invoiceResult.data ? (
+                <div className="portal-result-summary__grid">
+                  {invoiceResult.data.facturaTranId ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Factura</span>
+                      <strong className="portal-result-meta__value">
+                        {invoiceResult.data.facturaTranId}
+                      </strong>
+                    </div>
+                  ) : null}
+
+                  {invoiceResult.data.uuid ? (
+                    <div className="portal-result-meta portal-result-meta--wide">
+                      <span className="portal-result-meta__label">UUID</span>
+                      <strong className="portal-result-meta__value">
+                        {invoiceResult.data.uuid}
+                      </strong>
+                    </div>
+                  ) : null}
+
+                  {invoiceResult.data.fechaTimbrado ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Fecha de timbrado</span>
+                      <strong className="portal-result-meta__value">
+                        {invoiceResult.data.fechaTimbrado}
+                      </strong>
+                    </div>
+                  ) : null}
+
+                  {!invoiceResult.success && invoiceResult.error?.etapa ? (
+                    <div className="portal-result-meta">
+                      <span className="portal-result-meta__label">Etapa pendiente</span>
+                      <strong className="portal-result-meta__value">
+                        {invoiceResult.error.etapa}
+                      </strong>
+                    </div>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
+          ) : null}
+
           <div className="portal-cta-row">
             <Link href="/iniciar-facturacion" className="portal-button">
               Validar otro ticket
@@ -205,14 +329,17 @@ function FiscalDataPageContent() {
             <Link href="/" className="portal-link-button">
               Regresar al inicio
             </Link>
-            <button
-              type="button"
-              className="portal-button portal-button--success"
-              onClick={() => setActionMessage("Implementar botón Generar y envíar factura")}
-            >
-              Generar y envíar factura
-            </button>
-            {result?.data && result.success ? (
+            {result?.data && result.success && !invoiceResult ? (
+              <button
+                type="button"
+                className="portal-button portal-button--success"
+                disabled={isGeneratingInvoice}
+                onClick={handleGenerateInvoice}
+              >
+                {isGeneratingInvoice ? "Generando factura..." : "Generar y enviar factura"}
+              </button>
+            ) : null}
+            {result?.data && result.success && !invoiceResult ? (
               <Link
                 href={`/datos-fiscales-modificacion?${modificationQuery}`}
                 className="portal-button portal-button--warning"

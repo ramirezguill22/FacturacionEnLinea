@@ -4,6 +4,8 @@ out/
 dist/
 .env
 .env.local
+llavesOld
+llavesNew
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*

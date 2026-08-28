@@ -2,6 +2,7 @@ import "dotenv/config";
 
 type NetSuiteConfig = {
   restletUrl: string;
+  invoiceRestletUrl: string;
   account: string;
   realm: string;
   consumerKey: string;
@@ -9,6 +10,7 @@ type NetSuiteConfig = {
   tokenId: string;
   tokenSecret: string;
   timeoutMs: number;
+  invoiceTimeoutMs: number;
   isConfigured: boolean;
 };
 
@@ -35,6 +37,7 @@ function parsePositiveInteger(value: string | undefined, fallback: number): numb
 
 function buildNetSuiteConfig(): NetSuiteConfig {
   const restletUrl = readEnvString(process.env.NETSUITE_RESTLET_URL);
+  const invoiceRestletUrl = readEnvString(process.env.NETSUITE_INVOICE_RESTLET_URL);
   const account = readEnvString(process.env.NETSUITE_ACCOUNT);
   const realm = readEnvString(process.env.NETSUITE_REALM);
   const consumerKey = readEnvString(process.env.NETSUITE_CONSUMER_KEY);
@@ -42,9 +45,14 @@ function buildNetSuiteConfig(): NetSuiteConfig {
   const tokenId = readEnvString(process.env.NETSUITE_TOKEN_ID);
   const tokenSecret = readEnvString(process.env.NETSUITE_TOKEN_SECRET);
   const timeoutMs = parsePositiveInteger(process.env.NETSUITE_TIMEOUT_MS, 15000);
+  const invoiceTimeoutMs = parsePositiveInteger(
+    process.env.NETSUITE_INVOICE_TIMEOUT_MS,
+    120000
+  );
 
   return {
     restletUrl: restletUrl,
+    invoiceRestletUrl: invoiceRestletUrl,
     account: account,
     realm: realm,
     consumerKey: consumerKey,
@@ -52,6 +60,7 @@ function buildNetSuiteConfig(): NetSuiteConfig {
     tokenId: tokenId,
     tokenSecret: tokenSecret,
     timeoutMs: timeoutMs,
+    invoiceTimeoutMs: invoiceTimeoutMs,
     isConfigured: Boolean(
       restletUrl &&
         account &&

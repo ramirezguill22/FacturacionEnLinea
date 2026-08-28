@@ -3,6 +3,8 @@ import { NetSuiteIntegrationError } from "../../errors/netsuite-integration-erro
 import type {
   NetSuiteCustomerFiscalInfoRequest,
   NetSuiteCustomerFiscalInfoResponse,
+  NetSuiteInvoiceRequest,
+  NetSuiteInvoiceResponse,
   NetSuiteTicketValidationRequest,
   NetSuiteTicketValidationResponse,
   NetSuiteUsoCfdiCatalogRequest,
@@ -10,8 +12,16 @@ import type {
 } from "../../types/netsuite";
 import { buildNetSuiteTbaAuthorization } from "./netsuite-tba";
 
-function ensureNetSuiteConfig() {
-  if (!config.netSuite.isConfigured) {
+function ensureNetSuiteConfig(restletUrl: string) {
+  if (
+    !restletUrl ||
+    !config.netSuite.account ||
+    !config.netSuite.realm ||
+    !config.netSuite.consumerKey ||
+    !config.netSuite.consumerSecret ||
+    !config.netSuite.tokenId ||
+    !config.netSuite.tokenSecret
+  ) {
     throw new NetSuiteIntegrationError(
       "La configuración de NetSuite no está completa en las variables de entorno.",
       500
@@ -43,16 +53,20 @@ async function parseJsonResponse<TResponse>(response: Response): Promise<TRespon
   }
 }
 
-async function postToNetSuite<TResponse>(payload: unknown): Promise<TResponse> {
-  ensureNetSuiteConfig();
+async function postToNetSuite<TResponse>(
+  restletUrl: string,
+  payload: unknown,
+  timeoutMs = config.netSuite.timeoutMs
+): Promise<TResponse> {
+  ensureNetSuiteConfig(restletUrl);
 
-  const { signal, cancel } = buildAbortSignal(config.netSuite.timeoutMs);
+  const { signal, cancel } = buildAbortSignal(timeoutMs);
 
   try {
-    const response = await fetch(config.netSuite.restletUrl, {
+    const response = await fetch(restletUrl, {
       method: "POST",
       headers: {
-        Authorization: buildNetSuiteTbaAuthorization("POST", config.netSuite.restletUrl),
+        Authorization: buildNetSuiteTbaAuthorization("POST", restletUrl),
         Accept: "application/json",
         "Content-Type": "application/json"
       },
@@ -90,17 +104,27 @@ async function postToNetSuite<TResponse>(payload: unknown): Promise<TResponse> {
 export async function postTicketValidationToNetSuite(
   payload: NetSuiteTicketValidationRequest
 ): Promise<NetSuiteTicketValidationResponse> {
-  return postToNetSuite<NetSuiteTicketValidationResponse>(payload);
+  return postToNetSuite<NetSuiteTicketValidationResponse>(config.netSuite.restletUrl, payload);
 }
 
 export async function postCustomerFiscalInfoToNetSuite(
   payload: NetSuiteCustomerFiscalInfoRequest
 ): Promise<NetSuiteCustomerFiscalInfoResponse> {
-  return postToNetSuite<NetSuiteCustomerFiscalInfoResponse>(payload);
+  return postToNetSuite<NetSuiteCustomerFiscalInfoResponse>(config.netSuite.restletUrl, payload);
 }
 
 export async function postUsoCfdiCatalogToNetSuite(
   payload: NetSuiteUsoCfdiCatalogRequest
 ): Promise<NetSuiteUsoCfdiCatalogResponse> {
-  return postToNetSuite<NetSuiteUsoCfdiCatalogResponse>(payload);
+  return postToNetSuite<NetSuiteUsoCfdiCatalogResponse>(config.netSuite.restletUrl, payload);
+}
+
+export async function postInvoiceToNetSuite(
+  payload: NetSuiteInvoiceRequest
+): Promise<NetSuiteInvoiceResponse> {
+  return postToNetSuite<NetSuiteInvoiceResponse>(
+    config.netSuite.invoiceRestletUrl,
+    payload,
+    config.netSuite.invoiceTimeoutMs
+  );
 }

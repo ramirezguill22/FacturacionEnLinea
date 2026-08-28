@@ -10,6 +10,38 @@ export type NetSuiteUsoCfdiCatalogRequest = {
   catalogId: "customlist_cfdi_uso";
 };
 
+export type NetSuiteInvoiceRequest = {
+  salesorder: string;
+  ticket: string;
+};
+
+export type InvoiceStampingStatus = "EXITO" | "ERROR";
+
+export type InvoiceResultData = {
+  ovInternalId: number;
+  salesorder: string;
+  facturaInternalId: number;
+  facturaTranId: string;
+  ticket: string;
+  uuid: string | null;
+  fechaTimbrado: string | null;
+  registroPersonalizadoId: number;
+};
+
+export type InvoiceProcessingError = {
+  etapa: string;
+  codigo: string | number | null;
+  detalle: string;
+};
+
+export type NetSuiteInvoiceResponse = {
+  success: boolean;
+  estatusTimbrado: InvoiceStampingStatus;
+  mensaje: string;
+  data: InvoiceResultData;
+  error?: InvoiceProcessingError;
+};
+
 export type TicketValidationStatus =
   | "encontrado"
   | "no_encontrado"
